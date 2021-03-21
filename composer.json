@@ -1,0 +1,55 @@
+{
+  "name": "allansun/openapi-code-generator",
+  "description": "Code generator for OpenAPI or Swagger specification files",
+  "license": "MIT",
+  "keywords": [
+    "swagger",
+    "openapi",
+    "open-api",
+    "code-generator",
+    "api",
+    "client"
+  ],
+  "authors": [
+    {
+      "name": "Allan Sun",
+      "email": "allan.sun@bricre.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "allansun/openapi-runtime": "dev-master",
+    "allansun/openapi-parser": "dev-master",
+    "ext-json": "*",
+    "laminas/laminas-code": "^4.0.0",
+    "mattketmo/camel": "^v1.1.0",
+    "phpunit/phpunit": "^9",
+    "symfony/console": "^5",
+    "symfony/filesystem": "^v5.2.4",
+    "symfony/finder": "^v5.2.4",
+    "symfony/monolog-bridge": "^4|^5",
+    "symfony/options-resolver": "^5.2"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "/Users/allan/www/github/openapi-parser"
+    },
+    {
+      "type": "vcs",
+      "url": "/Users/allan/www/github/openapi-runtime"
+    }
+  ],
+  "autoload": {
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "OpenAPI\\CodeGenerator\\": "src",
+      "OpenAPI\\CodeGenerator\\Tests\\": "tests"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
