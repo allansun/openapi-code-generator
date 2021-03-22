@@ -4,16 +4,22 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f7a5d4daa93a41fd9379e58c6d8cf59d",
+    "content-hash": "a38b882f7da83ed50e6475548e21a773",
     "packages": [],
     "packages-dev": [
         {
             "name": "allansun/openapi-parser",
-            "version": "dev-master",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
-                "url": "/Users/allan/www/github/openapi-parser",
+                "url": "https://github.com/allansun/openapi-parser.git",
                 "reference": "fb303d3b65b83c3a5d3a8049d9295d2e489b2699"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/allansun/openapi-parser/zipball/fb303d3b65b83c3a5d3a8049d9295d2e489b2699",
+                "reference": "fb303d3b65b83c3a5d3a8049d9295d2e489b2699",
+                "shasum": ""
             },
             "require": {
                 "ext-fileinfo": "*",
@@ -25,18 +31,13 @@
                 "symfony/property-info": "^v5.1.5",
                 "symfony/yaml": "^v5.2.4"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "OpenAPI\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\OpenAPI\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "proprietary"
             ],
@@ -47,15 +48,25 @@
                 }
             ],
             "description": "A universal OpenAPI (Swagger) schema parser",
+            "support": {
+                "issues": "https://github.com/allansun/openapi-parser/issues",
+                "source": "https://github.com/allansun/openapi-parser/tree/2.1.2"
+            },
             "time": "2021-03-19T11:32:00+00:00"
         },
         {
             "name": "allansun/openapi-runtime",
-            "version": "dev-master",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
-                "url": "/Users/allan/www/github/openapi-runtime",
+                "url": "https://github.com/allansun/openapi-runtime.git",
                 "reference": "bfe88c0b6e74f416a58bc84167e0591ef30d59cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/bfe88c0b6e74f416a58bc84167e0591ef30d59cb",
+                "reference": "bfe88c0b6e74f416a58bc84167e0591ef30d59cb",
+                "shasum": ""
             },
             "require": {
                 "ext-json": "*",
@@ -76,18 +87,13 @@
                 "phpunit/phpunit": "~9",
                 "symfony/http-client": "^v5.2.4"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "OpenAPI\\Runtime\\": "src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "OpenAPI\\Runtime\\Tests\\": "tests"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -105,6 +111,10 @@
                 "runtime",
                 "swagger"
             ],
+            "support": {
+                "issues": "https://github.com/allansun/openapi-runtime/issues",
+                "source": "https://github.com/allansun/openapi-runtime/tree/2.0.1"
+            },
             "time": "2021-03-21T23:38:25+00:00"
         },
         {
@@ -335,16 +345,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.7.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3"
+                "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/53330f47520498c0ae1f61f7e2c90f55690c06a3",
-                "reference": "53330f47520498c0ae1f61f7e2c90f55690c06a3",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/35ea11d335fd638b5882ff1725228b3d35496ab1",
+                "reference": "35ea11d335fd638b5882ff1725228b3d35496ab1",
                 "shasum": ""
             },
             "require": {
@@ -404,9 +414,9 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.7.0"
+                "source": "https://github.com/guzzle/psr7/tree/1.8.1"
             },
-            "time": "2020-09-30T07:37:11+00:00"
+            "time": "2021-03-21T16:25:00+00:00"
         },
         {
             "name": "laminas/laminas-code",
@@ -4754,10 +4764,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "allansun/openapi-runtime": 20,
-        "allansun/openapi-parser": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

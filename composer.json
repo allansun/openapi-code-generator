@@ -20,8 +20,8 @@
     "php": ">=7.4"
   },
   "require-dev": {
-    "allansun/openapi-runtime": "dev-master",
-    "allansun/openapi-parser": "dev-master",
+    "allansun/openapi-runtime": "^2.0.1",
+    "allansun/openapi-parser": "^2.1.2",
     "ext-json": "*",
     "laminas/laminas-code": "^4.0.0",
     "mattketmo/camel": "^v1.1.0",
@@ -32,16 +32,6 @@
     "symfony/monolog-bridge": "^4|^5",
     "symfony/options-resolver": "^5.2"
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "/Users/allan/www/github/openapi-parser"
-    },
-    {
-      "type": "vcs",
-      "url": "/Users/allan/www/github/openapi-runtime"
-    }
-  ],
   "autoload": {
   },
   "autoload-dev": {
