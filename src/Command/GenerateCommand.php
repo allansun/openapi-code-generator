@@ -9,7 +9,9 @@ use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\Parser;
 use OpenAPI\Schema\V2\Swagger;
+use PhpCsFixer\Console\Application;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
@@ -24,10 +26,10 @@ class GenerateCommand extends Command
             ->setDescription('Generates code from swagger')
             ->addOption('input', 'f', InputOption::VALUE_OPTIONAL,
                 'Input Swagger or OpenAPI spec file, or a directory contains such files',
-                './openapi/bs_v3-client.json'
+                __DIR__ . '/../../openapi/'
             )
             ->addOption('config', 'c', InputOption::VALUE_OPTIONAL,
-                'Config file (php format) to control how the code generator should work', null);
+                'Config file (php format) to control how the code generator should work');
 
     }
 
@@ -51,6 +53,9 @@ class GenerateCommand extends Command
 
             $this->generate($config, $spec);
         }
+
+        $this->runPHPCsFixer($output);
+
         return 0;
     }
 
@@ -90,6 +95,33 @@ class GenerateCommand extends Command
         $CodeGenerator->generateApis();
         $CodeGenerator->generateResponseTypes();
 
+    }
+
+    private function runPHPCsFixer(OutputInterface $output)
+    {
+        $config = Config::getInstance();
+
+        $application = new Application();
+        $application->setAutoExit(false);
+
+        $rules = [
+            '@Symfony',
+            '@Symfony:risky',
+            'nullable_type_declaration_for_default_null_value',
+            'phpdoc_to_param_type',
+            'phpdoc_to_return_type',
+            'phpdoc_no_empty_return',
+            '-no_superfluous_phpdoc_tags',
+        ];
+        $input = new ArrayInput([
+            'command'       => 'fix',
+            'path'          => [$config->getOption(Config::OPTION_ROOT_SOURCE_DIR)],
+            '--allow-risky' => true,
+            '--rules'       => implode(',', $rules),
+            '--using-cache' => false,
+        ]);
+
+        $application->run($input, $output);
     }
 
 }
