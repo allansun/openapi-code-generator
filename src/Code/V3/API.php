@@ -21,6 +21,7 @@ use OpenAPI\Schema\V3\Operation;
 use OpenAPI\Schema\V3\Parameter;
 use OpenAPI\Schema\V3\PathItem;
 use OpenAPI\Schema\V3\Response;
+use OpenAPI\Schema\V3\Schema;
 
 class API extends AbstractClassGenerator implements APIInterface
 {
@@ -147,14 +148,18 @@ class API extends AbstractClassGenerator implements APIInterface
                         $this->getUseAlias(Config::getInstance()->getModelNamespace() .
                                            Utility::convertV3RefToClass($content->schema->items->getPatternedField('_ref'))
                         ) . '[]';
-                } else {
+                } elseif ($content->schema && $content->schema->type) {
                     $responseTypes[$content->schema->type] = $content->schema->type;
                 }
             }
         }
 
-        $tags[] = new ReturnTag(implode('|', $responseTypes));
-
+        if (0 < count($responseTypes)) {
+            $tags[] = new ReturnTag(implode('|', $responseTypes));
+        } else {
+            $tags[] = new ReturnTag('mixed');
+        }
+        
         $DocBlockGenerator->setTags($tags);
         $MethodGenerator->setDocBlock($DocBlockGenerator);
         $this->ClassGenerator->addMethodFromGenerator($MethodGenerator);
@@ -255,7 +260,8 @@ class API extends AbstractClassGenerator implements APIInterface
 
 
         foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
-            if ($Parameter && property_exists($Parameter, 'schema')) {
+            /** @var Schema $Parameter */
+            if ($Parameter && $Parameter->getPatternedField('_ref')) {
                 $queryParameterBody .= "\t\t'json' => \$Model->getArrayCopy()," . PHP_EOL;
             }
         }

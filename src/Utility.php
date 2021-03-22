@@ -6,7 +6,7 @@ namespace OpenAPI\CodeGenerator;
 
 use Camel\CaseTransformer;
 use Camel\CaseTransformerInterface;
-use OpenAPI\CodeGenerator\Camel\Format\GolangPackageCase;
+use OpenAPI\CodeGenerator\Camel\Format\ApiPlatformGeneratedCase;
 use OpenAPI\CodeGenerator\Camel\Format\PhpPackageCase;
 
 final class Utility
@@ -29,7 +29,7 @@ final class Utility
     static function convertDefinitionToClass(string $definition): string
     {
         if (!self::$caseTransformer) {
-            self::$caseTransformer = new CaseTransformer(new GolangPackageCase(), new PhpPackageCase());
+            self::$caseTransformer = new CaseTransformer(new ApiPlatformGeneratedCase(), new PhpPackageCase());
         }
 
         return self::$caseTransformer->transform($definition);
