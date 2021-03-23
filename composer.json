@@ -41,6 +41,9 @@
       "OpenAPI\\CodeGenerator\\Tests\\": "tests"
     }
   },
+  "bin": [
+    "bin/openapi-code-generator"
+  ],
   "minimum-stability": "dev",
   "prefer-stable": true
 }
