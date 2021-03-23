@@ -33,9 +33,13 @@
   "require-dev": {
     "phpunit/phpunit": "^9"
   },
+  "autoload": {
+    "psr-4": {
+      "OpenAPI\\CodeGenerator\\": "src"
+    }
+  },
   "autoload-dev": {
     "psr-4": {
-      "OpenAPI\\CodeGenerator\\": "src",
       "OpenAPI\\CodeGenerator\\Tests\\": "tests"
     }
   },
