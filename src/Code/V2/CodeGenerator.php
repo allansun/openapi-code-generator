@@ -32,23 +32,24 @@ class CodeGenerator implements CodeGeneratorInterface
         foreach ($this->spec->paths->getPatternedFields() as $path => $pathItem) {
             foreach (APIOperations::OPERATIONS as $operationMethod) {
                 $operation = $pathItem->$operationMethod;
-                if($operation instanceof Schema\Operation){
+                if ($operation instanceof Schema\Operation) {
                     // We assume first tag should be the Model this API operates on,this is mandatory.
-                    // If this is not the case, a customized parsing method should be used.
+                    // TODO: If this is not the case, a customized parsing method should be used.
                     $classname = $operation->tags[0];
-                    if(array_key_exists($classname,$classGenerators)){
+                    $classname = $classname ?? 'API';
+                    if (array_key_exists($classname, $classGenerators)) {
                         $classGenerator = $classGenerators[$classname];
-                    }else{
-                        $classGenerator = new $class($classname,$pathItem);
+                    } else {
+                        $classGenerator = new $class($classname, $pathItem);
                         $classGenerator->prepare();
                         $classGenerators[$classname] = $classGenerator;
                     }
-                    $classGenerator->parseMethod($operation,$path,$operationMethod);
+                    $classGenerator->parseMethod($operation, $path, $operationMethod);
                 }
             }
         }
 
-        foreach ($classGenerators as $classGenerator){
+        foreach ($classGenerators as $classGenerator) {
             $classGenerator->write();
             Logger::getInstance()->debug($classGenerator->getFilename());
         }
@@ -61,7 +62,7 @@ class CodeGenerator implements CodeGeneratorInterface
 
         foreach ($this->spec->definitions->getPatternedFields() as $name => $Schema) {
             //Filter out JsonLD (maybe we should implement this in the future?)
-            if (false !== strpos($name,'.jsonld')) {
+            if (false !== strpos($name, '.jsonld')) {
                 continue;
             }
             $classGenerator = new $class($name, $Schema);

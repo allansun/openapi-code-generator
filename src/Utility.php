@@ -32,6 +32,16 @@ final class Utility
             self::$caseTransformer = new CaseTransformer(new ApiPlatformGeneratedCase(), new PhpPackageCase());
         }
 
+        if (preg_match('/^[\d]{3}.*/', $definition)) {
+            // If the definition name starts with 3 digits, we assume it is a HTTP status code
+            // Because PHP dose not allow class name to start with numbers, we prefix a wording in front
+            $definition = 'Status' . $definition;
+        } elseif (preg_match('/^[\d]+.*/', $definition)) {
+            // For other unkown circumstances should a definition begins with number,
+            // we just add 'Model' to the beginning
+            $definition = 'Model' . $definition;
+        }
+
         return self::$caseTransformer->transform($definition);
     }
 

@@ -8,27 +8,27 @@
     "packages": [
         {
             "name": "allansun/openapi-parser",
-            "version": "2.1.3",
+            "version": "2.1.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allansun/openapi-parser.git",
-                "reference": "3d7fa702592c7a13b7f750027fbb4db5eba89bfc"
+                "reference": "0dac03e715e5de8788302a284ea148767d604eea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allansun/openapi-parser/zipball/3d7fa702592c7a13b7f750027fbb4db5eba89bfc",
-                "reference": "3d7fa702592c7a13b7f750027fbb4db5eba89bfc",
+                "url": "https://api.github.com/repos/allansun/openapi-parser/zipball/0dac03e715e5de8788302a284ea148767d604eea",
+                "reference": "0dac03e715e5de8788302a284ea148767d604eea",
                 "shasum": ""
             },
             "require": {
                 "ext-fileinfo": "*",
                 "ext-json": "*",
-                "php": "^7.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9",
+                "php": "^7.4",
                 "symfony/property-info": "^v5.1.5",
                 "symfony/yaml": "^v5.2.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9"
             },
             "type": "library",
             "autoload": {
@@ -49,9 +49,9 @@
             "description": "A universal OpenAPI (Swagger) schema parser",
             "support": {
                 "issues": "https://github.com/allansun/openapi-parser/issues",
-                "source": "https://github.com/allansun/openapi-parser/tree/2.1.3"
+                "source": "https://github.com/allansun/openapi-parser/tree/2.1.4.1"
             },
-            "time": "2021-03-25T12:02:31+00:00"
+            "time": "2021-04-01T15:15:33+00:00"
         },
         {
             "name": "allansun/openapi-runtime",

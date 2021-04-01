@@ -34,8 +34,9 @@ class CodeGenerator implements CodeGeneratorInterface
                 $operation = $pathItem->$operationMethod;
                 if($operation instanceof Schema\Operation){
                     // We assume first tag should be the Model this API operates on,this is mandatory.
-                    // If this is not the case, a customized parsing method should be used.
+                    // TODO: If this is not the case, a customized parsing method should be used.
                     $classname = $operation->tags[0];
+                    $classname = $classname ?? 'API';
                     if(array_key_exists($classname,$classGenerators)){
                         $classGenerator = $classGenerators[$classname];
                     }else{

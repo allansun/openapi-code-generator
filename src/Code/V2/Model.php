@@ -32,14 +32,14 @@ class Model extends AbstractClassGenerator implements ModelInterface
     public function __construct(string $classname, Schema $Schema)
     {
         parent::__construct([]);
-        $this->classname = $classname;
+        $this->classname = Utility::convertV2RefToClass($classname);
         $this->Schema    = $Schema;
     }
 
     public function prepare(): void
     {
         $config = Config::getInstance();
-        [$objectNamespace, $objectClassname] = Utility::parseClassInfo(Utility::convertV2RefToClass($this->classname));
+        [$objectNamespace, $objectClassname] = Utility::parseClassInfo($this->classname);
         $this->setNamespace(rtrim($this->getRootNamespace() . '\\' .
                                   $config->getOption(Config::OPTION_NAMESPACE_MODEL) . '\\' .
                                   $objectNamespace, '\\'));
