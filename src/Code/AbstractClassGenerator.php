@@ -13,6 +13,12 @@ use Symfony\Component\Filesystem\Filesystem;
 
 abstract class AbstractClassGenerator extends FileGenerator implements ClassGeneratorInterface
 {
+    const PARAMETER_IN_PATH = 'path';
+    const PARAMETER_IN_QUERY = 'query';
+    const PARAMETER_IN_BODY = 'body';
+    const PARAMETER_IN_HEADER = 'header';
+    const PARAMETER_IN_COOKIE = 'cookie';
+
     protected static array $internalPhpTypes = [
         'void',
         'int',

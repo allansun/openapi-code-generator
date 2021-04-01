@@ -25,12 +25,6 @@ use OpenAPI\Schema\V3\Schema;
 
 class API extends AbstractClassGenerator implements APIInterface
 {
-    const PARAMETER_IN_PATH = 'path';
-    const PARAMETER_IN_QUERY = 'query';
-    const PARAMETER_IN_BODY = 'body';
-    const PARAMETER_IN_HEADER = 'header';
-    const PARAMETER_IN_COOKIE = 'cookie';
-
     private PathItem $spec;
     private string $classname;
 

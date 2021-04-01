@@ -2,83 +2,87 @@
 
 namespace OpenAPI\CodeGenerator\Code\V2;
 
+use Exception;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\VarTag;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\PropertyGenerator;
 use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
+use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Utility;
-use OpenAPI\Schema\V2\DataTypes;
+use OpenAPI\Schema\DataTypes;
 use OpenAPI\Schema\V2\Schema;
 
-class Model extends AbstractClassGenerator
+class Model extends AbstractClassGenerator implements ModelInterface
 {
-    protected $rootNamespace = 'Kubernetes\\Model\\';
-
     /**
      * @var Schema
      */
-    protected $Schema;
+    protected Schema $Schema;
+    private string $classname;
 
     /**
      * Model constructor.
      *
-     * @param string       $classname
-     * @param Schema $Schema
+     * @param  string  $classname
+     * @param  Schema  $Schema
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(string $classname, Schema $Schema)
     {
         parent::__construct([]);
+        $this->classname = $classname;
+        $this->Schema    = $Schema;
+    }
 
-        [$objectNamespace, $objectClassname] = Utility::parseClassInfo(Utility::convertV2RefToClass($classname));
-        $this->setNamespace($this->rootNamespace . $objectNamespace);
-
-        $this->Schema = $Schema;
+    public function prepare(): void
+    {
+        $config = Config::getInstance();
+        [$objectNamespace, $objectClassname] = Utility::parseClassInfo(Utility::convertV2RefToClass($this->classname));
+        $this->setNamespace(rtrim($this->getRootNamespace() . '\\' .
+                                  $config->getOption(Config::OPTION_NAMESPACE_MODEL) . '\\' .
+                                  $objectNamespace, '\\'));
 
         $this->ClassGenerator = new ClassGenerator();
         $this->ClassGenerator
             ->setNamespaceName($this->namespace)
             ->setName($objectClassname)
             ->addProperties($this->parseProperties())
-            ->addUse('\KubernetesRuntime\AbstractModel')
+            ->addUse(Config::getInstance()->getOption(Config::OPTION_MODEL_BASE_CLASS), 'AbstractModel')
             ->setExtendedClass('AbstractModel');
 
         $this->setClass($this->ClassGenerator);
 
 
-        if ($Schema->description) {
-            $Schema->description = $this->parseDescription($Schema->description);
+        if ($this->Schema->description) {
+            $this->Schema->description = $this->parseDescription($this->Schema->description);
 
-            $DocBlockGenerator = new DocBlockGenerator($Schema->description);
-            $this->checkAndAddDeprecatedTag($Schema->description, $DocBlockGenerator);
+            $DocBlockGenerator = new DocBlockGenerator($this->Schema->description);
+            $this->checkAndAddDeprecatedTag($this->Schema->description, $DocBlockGenerator);
 
             $this->ClassGenerator->setDocBlock($DocBlockGenerator);
         }
 
-        if ($Schema->type && 'object' != $Schema->type) {
+        if ($this->Schema->type && 'object' != $this->Schema->type) {
             $this->ClassGenerator->addProperty('isRawObject', true, PropertyGenerator::FLAG_PROTECTED);
-        }
-
-        # Patch object should be dealt specially
-        if('Patch' == $objectClassname){
-            $this->ClassGenerator->setExtendedClass('\KubernetesRuntime\AbstractPatchModel');
         }
 
         $this->initFilename();
     }
 
+
     /**
      * @return PropertyGenerator[]
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    function parseProperties()
+    function parseProperties(): array
     {
         $properties = [];
 
-        foreach ((array)$this->Schema->properties as $key => $property) {
+        foreach ($this->Schema->properties as $key => $property) {
+            $property = (array)$property;
 
             if (false !== strpos($key, '$')) {
                 $key = str_replace('$', '_', $key);
@@ -87,30 +91,39 @@ class Model extends AbstractClassGenerator
             $PropertyGenerator = new PropertyGenerator($key);
             $PropertyGenerator->setFlags(PropertyGenerator::FLAG_PUBLIC);
 
-            $property['description'] = array_key_exists('description', $property)
-                ? $this->parseDescription($property['description']) : '';
+            $property['description'] = isset($property['description']) ? $property['description'] : '';
 
             $DocBlockGenerator = new DocBlockGenerator($property['description']);
 
             // Setup correct phpdocumentation @var tag
             if (array_key_exists('$ref', $property)) {
-                $DocBlockGenerator->setTag(new VarTag(null, $this->parseDataType($property['$ref'], false)));
+                $DocBlockGenerator->setTag(new VarTag(null, $this->parseDataType($property['$ref'])));
             }
 
             if (array_key_exists('type', $property)) {
+                $types = [];
                 switch ($property['type']) {
                     case 'array':
-                        $Tag = new VarTag(null, array_map(function ($item) {
+                        $types = array_map(function ($item) {
                             return $this->parseDataType($item, true);
-                        }, $property['items']));
+                        }, $property['items']);
                         break;
                     default:
-                        $property['type'] = $this->parseDataType($property['type'], false);
-
-                        $Tag = new VarTag(null, $property['type']);
+                        $types[] = $this->parseDataType($property['type']);
                         break;
                 }
-                $DocBlockGenerator->setTag($Tag);
+                if (array_key_exists('nullable', $property) && true == $property['nullable']) {
+                    $types[] = 'null';
+                }
+                $DocBlockGenerator->setTag(new VarTag(null, $types));
+            }
+
+            if (array_key_exists('default', $property)) {
+                $PropertyGenerator->setDefaultValue($property['default']);
+            }
+
+            if (array_key_exists('nullable', $property) && true == $property['nullable']) {
+                $PropertyGenerator->setDefaultValue(null);
             }
 
             // Mark property as DEPRECATED when we detect the keyword in description
@@ -118,57 +131,27 @@ class Model extends AbstractClassGenerator
                 $this->checkAndAddDeprecatedTag($property['description'], $DocBlockGenerator);
             }
 
-            // Parse value for special kubernetes keywords such as kind and apiversion
-            $groupVersionKind = $this->Schema->getPatternedField(KubernetesExtentions::GROUP_VERSION_KIND);
-            if ('kind' == $key &&
-                is_array($groupVersionKind) &&
-                array_key_exists(KubernetesExtentions::KIND, $groupVersionKind[0])) {
-                $PropertyGenerator->setDefaultValue($groupVersionKind[0][KubernetesExtentions::KIND]);
-            }
-            if ('apiVersion' == $key) {
-                $apiVersion = '';
-                if (is_array($groupVersionKind) &&
-                    array_key_exists(KubernetesExtentions::GROUP, $groupVersionKind[0]) &&
-                    '' != $groupVersionKind[0][KubernetesExtentions::GROUP]
-                ) {
-                    $apiVersion .= $groupVersionKind[0][KubernetesExtentions::GROUP] . "/";
-                }
 
-                if (is_array($groupVersionKind) &&
-                    array_key_exists(KubernetesExtentions::VERSION, $groupVersionKind[0]) &&
-                    $groupVersionKind[0][KubernetesExtentions::VERSION]
-                ) {
-                    $apiVersion .= $groupVersionKind[0][KubernetesExtentions::VERSION];
-                }
-                if ('' != $apiVersion) {
-                    $PropertyGenerator->setDefaultValue($apiVersion);
-                }
-            }
             $PropertyGenerator->setDocBlock($DocBlockGenerator);
-            $properties[] = $PropertyGenerator;
+            $properties[$key] = $PropertyGenerator;
         }
 
         return $properties;
     }
 
     /**
-     * @param string $dataType
-     * @param bool   $isArray
+     * @param  string  $dataType
+     * @param  bool    $isArray
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     protected function parseDataType(
         string $dataType,
         $isArray = false
     ): string {
         if (0 === strpos($dataType, '#')) {
-            $dataType = '\\' . $this->rootNamespace . Utility::convertV2RefToClass($dataType);
-
-            // If referenced datatype is within the same namespace, we don't need to import full namespace
-            if (1 === strpos($dataType, $this->getNamespace())) {
-                $dataType = str_replace('\\' . $this->getNamespace() . '\\', '', $dataType);
-            }
+            $dataType = '\\' . Config::getInstance()->getModelNamespace() . Utility::convertV2RefToClass($dataType);
         } else {
             if (array_key_exists($dataType, DataTypes::DATATYPES)) {
                 $dataType = DataTypes::getPHPDataType($dataType);

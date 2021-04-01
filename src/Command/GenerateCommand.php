@@ -4,7 +4,8 @@ namespace OpenAPI\CodeGenerator\Command;
 
 
 use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
-use OpenAPI\CodeGenerator\Code\V3\CodeGenerator;
+use OpenAPI\CodeGenerator\Code\V2;
+use OpenAPI\CodeGenerator\Code\V3;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\Parser;
@@ -82,9 +83,9 @@ class GenerateCommand extends Command
 
         if (null === $codeGeneratorClass) {
             if ($spec instanceof Swagger) {
-                $codeGeneratorClass = CodeGenerator::class;
+                $codeGeneratorClass = V2\CodeGenerator::class;
             } else {
-                $codeGeneratorClass = CodeGenerator::class;
+                $codeGeneratorClass = V3\CodeGenerator::class;
             }
         }
 
