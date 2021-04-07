@@ -54,6 +54,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         $MethodGenerator   = new MethodGenerator($apiAction);
         $DocBlockGenerator = new DocBlockGenerator($Operation->description);
+        $DocBlockGenerator->setWordWrap(Config::getInstance()->getOption(Config::OPTION_FORMATTING_WORD_WRAP));
 
         $MethodGenerator->setFlags(MethodGenerator::FLAG_PUBLIC);
         $MethodGenerator->setBody($this->generateMethodBody($Operation, $path, $operation, $parameters));

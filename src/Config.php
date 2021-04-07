@@ -30,6 +30,13 @@ class Config
 
     public const OPTION_CODE_GENERATOR_CLASS = 'CODE_GENERATOR_CLASS';
 
+    /**
+     * Laminas code generator doesn't allow controlling line length, nor dose PHPCSFixer.
+     * So for some cirtumstances (e.g. you have a looooot of possible return types in one API call), line got wrapped
+     * and IDE dose not recognize new line after @return. Hence we have to turn it off completely.
+     **/
+    public const OPTION_FORMATTING_WORD_WRAP = 'FORMATTING_WORD_WRAP';
+
     private static ?Config $instance = null;
     private array $options;
 
@@ -60,6 +67,8 @@ class Config
             self::OPTION_RESPONSE_TYPES_GENERATOR_CLASS => self::DEFAULT,
 
             self::OPTION_CODE_GENERATOR_CLASS => null,
+
+            self::OPTION_FORMATTING_WORD_WRAP => true,
         ])->setAllowedValues(self::OPTION_CODE_GENERATOR_CLASS, function ($values) {
             return null == $values || ($values instanceof CodeGeneratorInterface);
         });

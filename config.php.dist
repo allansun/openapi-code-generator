@@ -1,0 +1,27 @@
+<?php
+
+use OpenAPI\CodeGenerator\Config;
+use OpenAPI\Runtime\AbstractAPI;
+use OpenAPI\Runtime\AbstractModel;
+use OpenAPI\Runtime\ResponseTypes;
+
+return [
+    Config::OPTION_ROOT_SOURCE_DIR => __DIR__ . '/src/',
+
+    Config::OPTION_NAMESPACE_ROOT  => 'App',
+    Config::OPTION_NAMESPACE_API   => 'Api',
+    Config::OPTION_NAMESPACE_MODEL => 'Model',
+
+    Config::OPTION_API_BASE_CLASS      => AbstractAPI::class,
+    Config::OPTION_API_GENERATOR_CLASS => Config::DEFAULT,
+
+    Config::OPTION_MODEL_BASE_CLASS      => AbstractModel::class,
+    Config::OPTION_MODEL_GENERATOR_CLASS => Config::DEFAULT,
+
+    Config::OPTION_RESPONSE_TYPES_BASE_CLASS      => ResponseTypes::class,
+    Config::OPTION_RESPONSE_TYPES_GENERATOR_CLASS => Config::DEFAULT,
+
+    Config::OPTION_CODE_GENERATOR_CLASS => null,
+
+    Config::OPTION_FORMATTING_WORD_WRAP => true,
+];
