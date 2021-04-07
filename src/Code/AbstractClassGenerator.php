@@ -75,7 +75,8 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
     protected function getNamespaceDirectory(): string
     {
         return str_replace('\\', DIRECTORY_SEPARATOR,
-                ltrim($this->getNamespace(), Config::getInstance()->getOption(Config::OPTION_NAMESPACE_ROOT))) .
+                str_replace(Config::getInstance()->getOption(Config::OPTION_NAMESPACE_ROOT), '', $this->getNamespace())
+               ) .
                DIRECTORY_SEPARATOR;
     }
 
