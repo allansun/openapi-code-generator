@@ -8,22 +8,22 @@
     "packages": [
         {
             "name": "allansun/openapi-parser",
-            "version": "2.1.4.1",
+            "version": "2.1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allansun/openapi-parser.git",
-                "reference": "0dac03e715e5de8788302a284ea148767d604eea"
+                "reference": "2fe1a88167e8d543344843978e909a586f329b1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allansun/openapi-parser/zipball/0dac03e715e5de8788302a284ea148767d604eea",
-                "reference": "0dac03e715e5de8788302a284ea148767d604eea",
+                "url": "https://api.github.com/repos/allansun/openapi-parser/zipball/2fe1a88167e8d543344843978e909a586f329b1b",
+                "reference": "2fe1a88167e8d543344843978e909a586f329b1b",
                 "shasum": ""
             },
             "require": {
                 "ext-fileinfo": "*",
                 "ext-json": "*",
-                "php": "^7.4",
+                "php": "^7.4|^8.0",
                 "symfony/property-info": "^v5.1.5",
                 "symfony/yaml": "^v5.2.4"
             },
@@ -49,29 +49,29 @@
             "description": "A universal OpenAPI (Swagger) schema parser",
             "support": {
                 "issues": "https://github.com/allansun/openapi-parser/issues",
-                "source": "https://github.com/allansun/openapi-parser/tree/2.1.4.1"
+                "source": "https://github.com/allansun/openapi-parser/tree/2.1.4.2"
             },
-            "time": "2021-04-01T15:15:33+00:00"
+            "time": "2021-04-08T18:45:32+00:00"
         },
         {
             "name": "allansun/openapi-runtime",
-            "version": "2.02",
+            "version": "2.0.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allansun/openapi-runtime.git",
-                "reference": "17f2f8959caad66268c0ef5f20aec706a44d0559"
+                "reference": "b30251d1e50606b4801ef13fbe63b0b99aa352fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/17f2f8959caad66268c0ef5f20aec706a44d0559",
-                "reference": "17f2f8959caad66268c0ef5f20aec706a44d0559",
+                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/b30251d1e50606b4801ef13fbe63b0b99aa352fc",
+                "reference": "b30251d1e50606b4801ef13fbe63b0b99aa352fc",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/guzzle": "^6|^7",
                 "monolog/monolog": "^2",
-                "php": "~7.4",
+                "php": "~7.4|^8.0",
                 "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
                 "psr/http-client": "^1.0.1",
                 "symfony/http-client-contracts": "^v2.3.1",
@@ -112,9 +112,9 @@
             ],
             "support": {
                 "issues": "https://github.com/allansun/openapi-runtime/issues",
-                "source": "https://github.com/allansun/openapi-runtime/tree/2.02"
+                "source": "https://github.com/allansun/openapi-runtime/tree/2.0.7.1"
             },
-            "time": "2021-03-22T15:03:51+00:00"
+            "time": "2021-04-09T11:04:20+00:00"
         },
         {
             "name": "composer/semver",
@@ -413,16 +413,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v2.18.4",
+            "version": "v2.18.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/PHP-CS-Fixer.git",
-                "reference": "06f764e3cb6d60822d8f5135205f9d32b5508a31"
+                "reference": "e0f6d05c8b157f50029ca6c65c19ed2694f475bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/06f764e3cb6d60822d8f5135205f9d32b5508a31",
-                "reference": "06f764e3cb6d60822d8f5135205f9d32b5508a31",
+                "url": "https://api.github.com/repos/FriendsOfPHP/PHP-CS-Fixer/zipball/e0f6d05c8b157f50029ca6c65c19ed2694f475bf",
+                "reference": "e0f6d05c8b157f50029ca6c65c19ed2694f475bf",
                 "shasum": ""
             },
             "require": {
@@ -505,7 +505,7 @@
             "description": "A tool to automatically fix PHP code style",
             "support": {
                 "issues": "https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues",
-                "source": "https://github.com/FriendsOfPHP/PHP-CS-Fixer/tree/v2.18.4"
+                "source": "https://github.com/FriendsOfPHP/PHP-CS-Fixer/tree/v2.18.5"
             },
             "funding": [
                 {
@@ -513,7 +513,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-03-20T14:52:33+00:00"
+            "time": "2021-04-06T18:37:33+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

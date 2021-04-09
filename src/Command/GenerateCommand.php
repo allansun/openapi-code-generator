@@ -36,6 +36,7 @@ class GenerateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        error_reporting(E_ALL & ~E_NOTICE);
         Logger::getInstance()->setLogger(new ConsoleLogger($output));
         $configFile = $input->getOption('config');
         if (null !== $configFile) {
