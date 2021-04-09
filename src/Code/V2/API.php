@@ -18,20 +18,20 @@ use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
 use OpenAPI\Schema\V2\Operation;
 use OpenAPI\Schema\V2\Parameter;
-use OpenAPI\Schema\V2\PathItem;
 use OpenAPI\Schema\V2\Response;
 use OpenAPI\Schema\V2\Schema;
+use OpenAPI\Schema\V2\Swagger;
 
 class API extends AbstractClassGenerator implements APIInterface
 {
-    private PathItem $spec;
+    private Swagger $swagger;
     private string $classname;
 
-    public function __construct(string $classname, PathItem $spec)
+    public function __construct(string $classname, Swagger $swagger)
     {
         parent::__construct([]);
 
-        $this->spec      = $spec;
+        $this->swagger   = $swagger;
         $this->classname = $classname;
     }
 
@@ -121,7 +121,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         // Set responses
         $responseTypes = [];
-        foreach ($Operation->responses->getPatternedFields() as $responseStatus => $Response) {
+        foreach ($Operation->responses->getPatternedFields() as $Response) {
             /** @var Response $Response */
             /** @var Schema $content */
             if ($Response->schema && !empty($Response->schema->_ref)) {
@@ -261,7 +261,12 @@ class API extends AbstractClassGenerator implements APIInterface
         }
         $queryParameterBody .= "\t]" . PHP_EOL;
 
-        $body .= "return \$this->client->request('{$Operation->operationId}','{$operation}',\"{$path}\"," . PHP_EOL;
+        $path = Utility::getRelativeUrl($path);
+        if (!empty($this->swagger->basePath)) {
+            $path = Utility::getRelativeUrl($this->swagger->basePath) . '/' . $path;
+        }
+
+        $body .= "return \$this->client->request('$Operation->operationId','{$operation}',\"{$path}\"," . PHP_EOL;
         $body .= $queryParameterBody;
         $body .= ");" . PHP_EOL;
 

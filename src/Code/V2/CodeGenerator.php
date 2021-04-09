@@ -40,7 +40,7 @@ class CodeGenerator implements CodeGeneratorInterface
                     if (array_key_exists($classname, $classGenerators)) {
                         $classGenerator = $classGenerators[$classname];
                     } else {
-                        $classGenerator = new $class($classname, $pathItem);
+                        $classGenerator = new $class($classname, $this->spec);
                         $classGenerator->prepare();
                         $classGenerators[$classname] = $classGenerator;
                     }

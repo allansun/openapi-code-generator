@@ -91,7 +91,7 @@ class Model extends AbstractClassGenerator implements ModelInterface
             $PropertyGenerator = new PropertyGenerator($key);
             $PropertyGenerator->setFlags(PropertyGenerator::FLAG_PUBLIC);
 
-            $property['description'] = isset($property['description']) ? $property['description'] : '';
+            $property['description'] = $property['description'] ?? '';
 
             $DocBlockGenerator = new DocBlockGenerator($property['description']);
 

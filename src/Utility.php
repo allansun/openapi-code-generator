@@ -72,4 +72,13 @@ final class Utility
         return $word;
     }
 
+    static function getRelativeUrl(string $url): string
+    {
+        if (substr($url, 0, 1) == '/') {
+            return substr($url, 1);
+        } else {
+            return $url;
+        }
+    }
+
 }

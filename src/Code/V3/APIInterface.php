@@ -4,9 +4,9 @@
 namespace OpenAPI\CodeGenerator\Code\V3;
 
 
-use OpenAPI\Schema\V3\PathItem;
+use OpenAPI\Schema\V3\OpenAPI;
 
 interface APIInterface
 {
-    public function __construct(string $classname, PathItem $spec);
+    public function __construct(string $classname, OpenAPI $openAPI);
 }

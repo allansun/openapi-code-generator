@@ -4,9 +4,9 @@
 namespace OpenAPI\CodeGenerator\Code\V2;
 
 
-use OpenAPI\Schema\V2\PathItem;
+use OpenAPI\Schema\V2\Swagger;
 
 interface APIInterface
 {
-    public function __construct(string $classname, PathItem $spec);
+    public function __construct(string $classname, Swagger $swagger);
 }

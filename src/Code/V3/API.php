@@ -17,22 +17,22 @@ use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
 use OpenAPI\Schema\V3\MediaType;
+use OpenAPI\Schema\V3\OpenAPI;
 use OpenAPI\Schema\V3\Operation;
 use OpenAPI\Schema\V3\Parameter;
-use OpenAPI\Schema\V3\PathItem;
 use OpenAPI\Schema\V3\Response;
 use OpenAPI\Schema\V3\Schema;
 
 class API extends AbstractClassGenerator implements APIInterface
 {
-    private PathItem $spec;
+    private OpenAPI $openAPI;
     private string $classname;
 
-    public function __construct(string $classname, PathItem $spec)
+    public function __construct(string $classname, OpenAPI $openAPI)
     {
         parent::__construct([]);
 
-        $this->spec      = $spec;
+        $this->openAPI   = $openAPI;
         $this->classname = $classname;
     }
 
@@ -124,7 +124,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         // Set responses
         $responseTypes = [];
-        foreach ($Operation->responses->getPatternedFields() as $responseStatus => $Response) {
+        foreach ($Operation->responses->getPatternedFields() as $Response) {
             /** @var Response $Response */
             foreach ((array)$Response->content as $contentType => $content) {
                 if ('application/json' != $contentType) {
@@ -271,6 +271,9 @@ class API extends AbstractClassGenerator implements APIInterface
             $queryParameterBody .= "\t\t'query' => \$queries," . PHP_EOL;
         }
         $queryParameterBody .= "\t]" . PHP_EOL;
+
+        // Force $path to be relative url to prevent URI (not URL) being forced to absolute path
+        $path = Utility::getRelativeUrl($path);
 
         $body .= "return \$this->client->request('{$Operation->operationId}','{$operation}',\"{$path}\"," . PHP_EOL;
         $body .= $queryParameterBody;
