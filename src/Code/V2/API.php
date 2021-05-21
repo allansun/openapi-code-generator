@@ -266,7 +266,8 @@ class API extends AbstractClassGenerator implements APIInterface
             $path = Utility::getRelativeUrl($this->swagger->basePath) . '/' . $path;
         }
 
-        $body .= "return \$this->client->request('$Operation->operationId','{$operation}',\"{$path}\"," . PHP_EOL;
+        $body .= "return \$this->client->request('$Operation->operationId','" . strtoupper($operation) .
+                 "',\"{$path}\"," . PHP_EOL;
         $body .= $queryParameterBody;
         $body .= ");" . PHP_EOL;
 
