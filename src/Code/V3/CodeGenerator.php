@@ -3,6 +3,9 @@
 
 namespace OpenAPI\CodeGenerator\Code\V3;
 
+use Camel\CaseTransformer;
+use Camel\Format\CamelCase;
+use Camel\Format\SnakeCase;
 use OpenAPI\CodeGenerator\Code\APIOperations;
 use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
 use OpenAPI\CodeGenerator\Config;
@@ -26,30 +29,31 @@ class CodeGenerator implements CodeGeneratorInterface
         /** @var Api[] $classGenerators */
         $classGenerators = [];
 
-        $class = $this->config->getOption(Config::OPTION_API_GENERATOR_CLASS);
-        $class = Config::DEFAULT == $class ? API::class : $class;
+        $class           = $this->config->getOption(Config::OPTION_API_GENERATOR_CLASS);
+        $class           = Config::DEFAULT == $class ? API::class : $class;
+        $caseTransformer = new CaseTransformer(new SnakeCase(), new CamelCase());
 
         foreach ($this->spec->paths->getPatternedFields() as $path => $pathItem) {
             foreach (APIOperations::OPERATIONS as $operationMethod) {
                 $operation = $pathItem->$operationMethod;
-                if($operation instanceof Schema\Operation){
+                if ($operation instanceof Schema\Operation) {
                     // We assume first tag should be the Model this API operates on,this is mandatory.
                     // TODO: If this is not the case, a customized parsing method should be used.
-                    $classname = $operation->tags[0];
+                    $classname = $caseTransformer->transform($operation->tags[0]);
                     $classname = $classname ?? 'API';
-                    if(array_key_exists($classname,$classGenerators)){
+                    if (array_key_exists($classname, $classGenerators)) {
                         $classGenerator = $classGenerators[$classname];
-                    }else{
-                        $classGenerator = new $class($classname,$pathItem);
+                    } else {
+                        $classGenerator = new $class($classname, $pathItem);
                         $classGenerator->prepare();
                         $classGenerators[$classname] = $classGenerator;
                     }
-                    $classGenerator->parseMethod($operation,$path,$operationMethod);
+                    $classGenerator->parseMethod($operation, $path, $operationMethod);
                 }
             }
         }
 
-        foreach ($classGenerators as $classGenerator){
+        foreach ($classGenerators as $classGenerator) {
             $classGenerator->write();
             Logger::getInstance()->debug($classGenerator->getFilename());
         }
@@ -62,7 +66,7 @@ class CodeGenerator implements CodeGeneratorInterface
 
         foreach ($this->spec->components->schemas as $name => $Schema) {
             //Filter out JsonLD (maybe we should implement this in the future?)
-            if (false !== strpos($name,'.jsonld')) {
+            if (false !== strpos($name, '.jsonld')) {
                 continue;
             }
             $classGenerator = new $class($name, $Schema);
