@@ -40,7 +40,6 @@ class GenerateCommand extends Command
         Logger::getInstance()->setLogger(new ConsoleLogger($output));
         $configFile = $input->getOption('config');
         if (null !== $configFile) {
-            /** @noinspection PhpIncludeInspection */
             $options = require_once $configFile;
         } else {
             $options = [];
@@ -118,9 +117,9 @@ class GenerateCommand extends Command
         $input = new ArrayInput([
             'command'       => 'fix',
             'path'          => [$config->getOption(Config::OPTION_ROOT_SOURCE_DIR)],
-            '--allow-risky' => true,
+            '--allow-risky' => 'yes',
             '--rules'       => implode(',', $rules),
-            '--using-cache' => false,
+            '--using-cache' => 'no',
         ]);
 
         $application->run($input, $output);
