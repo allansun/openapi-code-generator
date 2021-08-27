@@ -11,7 +11,10 @@ use OpenAPI\CodeGenerator\Camel\Format\PhpPackageCase;
 
 final class Utility
 {
-    static private ?CaseTransformerInterface $caseTransformer = null;
+    /**
+     * @var null|CaseTransformerInterface
+     */
+    static private $caseTransformer = null;
 
     public static function setCaseTransformer(CaseTransformerInterface $caseTransformer): void
     {
@@ -33,8 +36,8 @@ final class Utility
         }
 
         if (preg_match('/^[\d]{3}.*/', $definition)) {
-            // If the definition name starts with 3 digits, we assume it is a HTTP status code
-            // Because PHP dose not allow class name to start with numbers, we prefix a wording in front
+            // If the definition name starts with 3 digits, we assume it is an HTTP status code
+            // Because PHP does not allow class name to start with numbers, we prefix a wording in front
             $definition = 'Status' . $definition;
         } elseif (preg_match('/^[\d]+.*/', $definition)) {
             // For other unkown circumstances should a definition begins with number,
@@ -67,9 +70,7 @@ final class Utility
         $word = str_replace('-', '_', $word);
 
         // Change 'Namespace' package to 'TheNamespace', because 'namespace' is a PHP reservced keyword
-        $word = 'namespace' == strtolower($word) ? 'The' . ucfirst($word) : ucfirst($word);
-
-        return $word;
+        return 'namespace' == strtolower($word) ? 'The' . ucfirst($word) : ucfirst($word);
     }
 
     static function getRelativeUrl(string $url): string

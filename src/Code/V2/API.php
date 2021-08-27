@@ -6,6 +6,7 @@ namespace OpenAPI\CodeGenerator\Code\V2;
 use Camel\CaseTransformer;
 use Camel\Format\CamelCase;
 use Camel\Format\SnakeCase;
+use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\ParamTag;
 use Laminas\Code\Generator\DocBlock\Tag\ReturnTag;
@@ -24,8 +25,14 @@ use OpenAPI\Schema\V2\Swagger;
 
 class API extends AbstractClassGenerator implements APIInterface
 {
-    private Swagger $swagger;
-    private string $classname;
+    /**
+     * @var Swagger
+     */
+    private $swagger;
+    /**
+     * @var string
+     */
+    private $classname;
 
     public function __construct(string $classname, Swagger $swagger)
     {
@@ -56,7 +63,7 @@ class API extends AbstractClassGenerator implements APIInterface
         $DocBlockGenerator = new DocBlockGenerator($Operation->description);
         $DocBlockGenerator->setWordWrap(Config::getInstance()->getOption(Config::OPTION_FORMATTING_WORD_WRAP));
 
-        $MethodGenerator->setFlags(MethodGenerator::FLAG_PUBLIC);
+        $MethodGenerator->setFlags(AbstractMemberGenerator::FLAG_PUBLIC);
         $MethodGenerator->setBody($this->generateMethodBody($Operation, $path, $operation, $parameters));
 
         /** @var Parameter[] $methodParameters */

@@ -4,8 +4,9 @@
 namespace OpenAPI\CodeGenerator\Code\V3;
 
 
+use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
-use Laminas\Code\Generator\PropertyGenerator;
+use Laminas\Code\Generator\ValueGenerator;
 use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Code\APIOperations;
 use OpenAPI\CodeGenerator\Config;
@@ -18,8 +19,11 @@ use OpenAPI\Schema\V3\Response;
 
 class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInterface
 {
-    private static ?array $responseTypes = [];
-    private Paths $spec;
+    private static $responseTypes = [];
+    /**
+     * @var Paths
+     */
+    private $spec;
 
     public function __construct(Paths $spec)
     {
@@ -43,7 +47,7 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
 
         $this->initFilename();
 
-        foreach ($this->spec->getPatternedFields() as $path => $PathItemObject) {
+        foreach ($this->spec->getPatternedFields() as $PathItemObject) {
             foreach (APIOperations::OPERATIONS as $operation) {
                 $OperationObject = $PathItemObject->$operation;
                 if ($OperationObject instanceof Operation) {
@@ -53,11 +57,12 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
         }
     }
 
-    public function write(): self
+    public function write(): AbstractClassGenerator
     {
+        $typesDefaultValue = new ValueGenerator(self::$responseTypes, ValueGenerator::TYPE_ARRAY);
         $this->ClassGenerator->addProperty('types',
-            self::$responseTypes,
-            [PropertyGenerator::FLAG_PUBLIC, PropertyGenerator::FLAG_STATIC]);
+            $typesDefaultValue,
+            [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC]);
 
         parent::write();
 
@@ -72,7 +77,7 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
                           $config->getOption(Config::OPTION_NAMESPACE_MODEL) .
                           '\\';
 
-        foreach ((array)$Operation->responses->getPatternedFields() as $statusCode => $Response) {
+        foreach ($Operation->responses->getPatternedFields() as $statusCode => $Response) {
             /** @var Response $Response */
             if ($Response->content && array_key_exists('application/json', $Response->content)) {
                 /** @var MediaType $jsonResponse */
@@ -89,7 +94,7 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
                         . '[]';
 
                 }
-                self::$responseTypes[$Operation->operationId]["{$statusCode}."] = $responseType;
+                self::$responseTypes[$Operation->operationId]["$statusCode."] = $responseType;
             }
         }
 

@@ -7,7 +7,10 @@ use Psr\Log\NullLogger;
 
 class Logger
 {
-    static private ?Logger $instance = null;
+    /**
+     * @var null|Logger
+     */
+    static private $instance = null;
 
     /**
      * @var LoggerInterface
@@ -50,7 +53,7 @@ class Logger
      *
      * @return $this
      */
-    public function debug($message, $extra = []): self
+    public function debug($message, array $extra = []): self
     {
         $this->logger->debug($message, $extra);
 

@@ -25,7 +25,9 @@ class ApiPlatformGeneratedCase implements FormatInterface
         $serializationGroup  = str_replace('_', '|', $serializationGroup);
         $serializationGroup  = str_replace('.', '|', $serializationGroup);
         $serializationGroups = explode('|', $serializationGroup);
-        $serializationGroups = array_map(fn($word) => ucfirst($word), $serializationGroups);
+        $serializationGroups = array_map(function () use ($word) {
+            return ucfirst($word);
+        }, $serializationGroups);
 
         return [$model, implode('', $serializationGroups)];
     }

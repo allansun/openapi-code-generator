@@ -14,8 +14,14 @@ use OpenAPI\Schema\V3 as Schema;
 
 class CodeGenerator implements CodeGeneratorInterface
 {
-    protected Config $config;
-    private Schema\OpenAPI $spec;
+    /**
+     * @var Config
+     */
+    protected $config;
+    /**
+     * @var Schema\OpenAPI
+     */
+    private $spec;
 
     public function __construct($spec)
     {

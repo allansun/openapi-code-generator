@@ -6,6 +6,7 @@ namespace OpenAPI\CodeGenerator\Code\V3;
 use Camel\CaseTransformer;
 use Camel\Format\CamelCase;
 use Camel\Format\SnakeCase;
+use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\ParamTag;
 use Laminas\Code\Generator\DocBlock\Tag\ReturnTag;
@@ -25,8 +26,14 @@ use OpenAPI\Schema\V3\Schema;
 
 class API extends AbstractClassGenerator implements APIInterface
 {
-    private OpenAPI $openAPI;
-    private string $classname;
+    /**
+     * @var OpenAPI
+     */
+    private $openAPI;
+    /**
+     * @var string
+     */
+    private $classname;
 
     public function __construct(string $classname, OpenAPI $openAPI)
     {
@@ -57,7 +64,7 @@ class API extends AbstractClassGenerator implements APIInterface
         $DocBlockGenerator = new DocBlockGenerator($Operation->description);
         $DocBlockGenerator->setWordWrap(Config::getInstance()->getOption(Config::OPTION_FORMATTING_WORD_WRAP));
 
-        $MethodGenerator->setFlags(MethodGenerator::FLAG_PUBLIC);
+        $MethodGenerator->setFlags(AbstractMemberGenerator::FLAG_PUBLIC);
         $MethodGenerator->setBody($this->generateMethodBody($Operation, $path, $operation, $parameters));
 
         /** @var Parameter[] $methodParameters */
@@ -185,7 +192,7 @@ class API extends AbstractClassGenerator implements APIInterface
      */
     protected function parseParameters(
         Operation $operation
-    ) {
+    ): array {
         $parameters = [
             self::PARAMETER_IN_PATH   => [],
             self::PARAMETER_IN_BODY   => [],

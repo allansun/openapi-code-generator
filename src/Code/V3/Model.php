@@ -3,6 +3,7 @@
 namespace OpenAPI\CodeGenerator\Code\V3;
 
 use Exception;
+use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\VarTag;
 use Laminas\Code\Generator\DocBlockGenerator;
@@ -18,8 +19,12 @@ class Model extends AbstractClassGenerator implements ModelInterface
     /**
      * @var Schema
      */
-    protected Schema $Schema;
-    private string $classname;
+    protected $Schema;
+
+    /**
+     * @var string
+     */
+    private $classname;
 
     /**
      * Model constructor.
@@ -65,7 +70,7 @@ class Model extends AbstractClassGenerator implements ModelInterface
         }
 
         if ($this->Schema->type && 'object' != $this->Schema->type) {
-            $this->ClassGenerator->addProperty('isRawObject', true, PropertyGenerator::FLAG_PROTECTED);
+            $this->ClassGenerator->addProperty('isRawObject', true, AbstractMemberGenerator::FLAG_PROTECTED);
         }
 
         $this->initFilename();
@@ -89,9 +94,9 @@ class Model extends AbstractClassGenerator implements ModelInterface
             }
 
             $PropertyGenerator = new PropertyGenerator($key);
-            $PropertyGenerator->setFlags(PropertyGenerator::FLAG_PUBLIC);
+            $PropertyGenerator->setFlags(AbstractMemberGenerator::FLAG_PUBLIC);
 
-            $property['description'] = isset($property['description']) ? $property['description'] : '';
+            $property['description'] = $property['description'] ?? '';
 
             $DocBlockGenerator = new DocBlockGenerator($property['description']);
 
@@ -148,7 +153,7 @@ class Model extends AbstractClassGenerator implements ModelInterface
      */
     protected function parseDataType(
         string $dataType,
-        $isArray = false
+        bool $isArray = false
     ): string {
         if (0 === strpos($dataType, '#')) {
             $dataType = '\\' . Config::getInstance()->getModelNamespace() . Utility::convertV3RefToClass($dataType);

@@ -18,9 +18,7 @@ class PhpPackageCase implements FormatInterface
             // Ensure words are lowercase
             $word = ucfirst($word);
 
-            $word = Utility::filterSpecialWord($word);
-
-            return $word;
+            return Utility::filterSpecialWord($word);
         }, $words);
 
         return implode('\\', $words);

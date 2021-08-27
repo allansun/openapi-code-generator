@@ -33,12 +33,19 @@ class Config
     /**
      * Laminas code generator doesn't allow controlling line length, nor dose PHPCSFixer.
      * So for some cirtumstances (e.g. you have a looooot of possible return types in one API call), line got wrapped
-     * and IDE dose not recognize new line after @return. Hence we have to turn it off completely.
+     * and IDE does not recognize new line after @return, hence we have to turn it off completely.
      **/
     public const OPTION_FORMATTING_WORD_WRAP = 'FORMATTING_WORD_WRAP';
 
-    private static ?Config $instance = null;
-    private array $options;
+    /**
+     * @var null|Config
+     */
+    private static $instance = null;
+
+    /**
+     * @var array
+     */
+    private $options;
 
     public function __construct(array $options = [])
     {

@@ -19,7 +19,7 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
     const PARAMETER_IN_HEADER = 'header';
     const PARAMETER_IN_COOKIE = 'cookie';
 
-    protected static array $internalPhpTypes = [
+    protected static $internalPhpTypes = [
         'void',
         'int',
         'float',
@@ -30,8 +30,16 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
         'iterable',
         'object'
     ];
-    protected ClassGenerator $ClassGenerator;
-    protected ?string $rootSourceFileDirectory = null;
+
+    /**
+     * @var ClassGenerator
+     */
+    protected $ClassGenerator;
+
+    /**
+     * @var null|string
+     */
+    protected $rootSourceFileDirectory = null;
 
     public function initFilename(): string
     {
