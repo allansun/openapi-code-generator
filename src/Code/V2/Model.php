@@ -86,7 +86,7 @@ class Model extends AbstractClassGenerator implements ModelInterface
     {
         $properties = [];
 
-        foreach ($this->Schema->properties as $key => $property) {
+        foreach ((array)$this->Schema->properties as $key => $property) {
             $property = (array)$property;
 
             if (false !== strpos($key, '$')) {
