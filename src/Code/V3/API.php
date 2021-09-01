@@ -174,8 +174,8 @@ class API extends AbstractClassGenerator implements APIInterface
         $Transformer = new CaseTransformer(new SnakeCase(), new CamelCase());
         $tag         = ucfirst($Transformer->transform($Operation->tags[0]));
 
-        $apiAction = str_replace($tag, '', $apiAction);
-        $apiAction = str_replace($apiKind, '', $apiAction);
+        $apiAction = $tag == $apiAction ? $apiAction : str_replace($tag, '', $apiAction);
+        $apiAction = $apiKind == $apiAction ? $apiAction : str_replace($apiKind, '', $apiAction);
         $apiAction = str_replace('Namespaced', '', $apiAction);
 
         if ($this->ClassGenerator->hasMethod($apiAction)) {

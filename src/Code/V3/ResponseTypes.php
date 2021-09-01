@@ -59,9 +59,8 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
 
     public function write(): AbstractClassGenerator
     {
-        $typesDefaultValue = new ValueGenerator(self::$responseTypes, ValueGenerator::TYPE_ARRAY);
         $this->ClassGenerator->addProperty('types',
-            $typesDefaultValue,
+            $this::$responseTypes,
             [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC]);
 
         parent::write();
