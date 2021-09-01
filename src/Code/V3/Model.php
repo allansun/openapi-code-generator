@@ -84,6 +84,9 @@ class Model extends AbstractClassGenerator implements ModelInterface
      */
     function parseProperties(): array
     {
+        if (!isset($this->Schema->properties)) {
+            return [];
+        }
         $properties = [];
 
         foreach ($this->Schema->properties->getPatternedFields() as $key => $property) {
