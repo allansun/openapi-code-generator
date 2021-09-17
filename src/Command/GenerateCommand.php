@@ -46,9 +46,9 @@ class GenerateCommand extends Command
         }
         $config = Config::getInstance($options);
 
-        $finder = $this->getFinder($input);
+        $files = $this->getFinder($input)->getIterator();
 
-        foreach ($finder as $file) {
+        foreach ($files as $file) {
             Logger::getInstance()->debug('Parsing ' . $file);
             $spec = Parser::parse($file->getRealPath());
 
@@ -67,10 +67,16 @@ class GenerateCommand extends Command
         if (is_dir($inputFile)) {
             $finder->in($inputFile)->files()->name(['*.json', '*.yml', '*.yaml']);
         } else {
+
             $fileInfo = explode(DIRECTORY_SEPARATOR, $inputFile);
             $filename = array_pop($fileInfo);
             $filePath = implode(DIRECTORY_SEPARATOR, $fileInfo);
-            $finder->in(getcwd() . DIRECTORY_SEPARATOR . $filePath)->files()->name($filename);
+
+            if (str_starts_with('.', $inputFile)) {
+                $filePath = getcwd() . DIRECTORY_SEPARATOR . $filePath;
+            }
+
+            $finder->in($filePath)->files()->name($filename);
         }
 
         return $finder;
