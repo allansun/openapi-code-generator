@@ -81,15 +81,6 @@ class Config
         });
     }
 
-    public static function getInstance($options = []): Config
-    {
-        if (!self::$instance) {
-            self::$instance = new self($options);
-        }
-
-        return self::$instance;
-    }
-
     public function getAPINamespace(): string
     {
         return $this->getOption(self::OPTION_NAMESPACE_ROOT) . '\\' . $this->getOption(self::OPTION_NAMESPACE_API) .
@@ -114,5 +105,19 @@ class Config
     public function getResponseTypesNamespace(): string
     {
         return $this->getOption(self::OPTION_NAMESPACE_ROOT) . '\\';
+    }
+
+    public function reset(): void
+    {
+        self::$instance = null;
+    }
+
+    public static function getInstance($options = []): Config
+    {
+        if (!self::$instance) {
+            self::$instance = new self($options);
+        }
+
+        return self::$instance;
     }
 }
