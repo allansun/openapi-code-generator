@@ -107,7 +107,7 @@ class Config
         return $this->getOption(self::OPTION_NAMESPACE_ROOT) . '\\';
     }
 
-    public function reset(): void
+    public static function reset(): void
     {
         self::$instance = null;
     }
