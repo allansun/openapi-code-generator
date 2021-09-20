@@ -109,9 +109,11 @@ class Model extends AbstractClassGenerator implements ModelInterface
                 $types = [];
                 switch ($property['type']) {
                     case 'array':
-                        $types = array_map(function ($item) {
-                            return $this->parseDataType($item, true);
-                        }, $property['items']);
+                        $types = array_map(function ($key, $item) {
+                            if (in_array($key, ['$ref', 'type'])) {
+                                return $this->parseDataType($item, true);
+                            }
+                        }, array_keys($property['items']), array_values($property['items']));
                         break;
                     default:
                         $types[] = $this->parseDataType($property['type']);
@@ -145,22 +147,27 @@ class Model extends AbstractClassGenerator implements ModelInterface
     }
 
     /**
-     * @param  string  $dataType
-     * @param  bool    $isArray
+     * @param  mixed  $dataType
+     * @param  bool   $isArray
      *
      * @return string
      * @throws Exception
      */
     protected function parseDataType(
-        string $dataType,
+        $dataType,
         bool $isArray = false
     ): string {
-        if (0 === strpos($dataType, '#')) {
-            $dataType = '\\' . Config::getInstance()->getModelNamespace() . Utility::convertV2RefToClass($dataType);
-        } else {
-            if (array_key_exists($dataType, DataTypes::DATATYPES)) {
-                $dataType = DataTypes::getPHPDataType($dataType);
+        if (is_string($dataType)) {
+            if (0 === strpos($dataType, '#')) {
+                $dataType = '\\' . Config::getInstance()->getModelNamespace() . Utility::convertV2RefToClass($dataType);
+            } else {
+                if (array_key_exists($dataType, DataTypes::DATATYPES)) {
+                    $dataType = DataTypes::getPHPDataType($dataType);
+                }
             }
+        }
+        if (is_array($dataType) && key_exists('items', $dataType)) {
+            return $this->parseDataType($dataType['items']);
         }
 
         if ($isArray) {

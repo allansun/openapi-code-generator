@@ -17,7 +17,7 @@
     }
   ],
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.2",
     "ext-json": "*",
     "allansun/openapi-runtime": "^2.2",
     "allansun/openapi-parser": "^2.1.2",

@@ -112,9 +112,11 @@ class Model extends AbstractClassGenerator implements ModelInterface
                 $types = [];
                 switch ($property['type']) {
                     case 'array':
-                        $types = array_map(function ($item) {
-                            return $this->parseDataType($item, true);
-                        }, $property['items']);
+                        $types = array_map(function ($key, $item) {
+                            if (in_array($key, ['$ref', 'type'])) {
+                                return $this->parseDataType($item, true);
+                            }
+                        }, array_keys($property['items']), array_values($property['items']));
                         break;
                     default:
                         $types[] = $this->parseDataType($property['type']);
