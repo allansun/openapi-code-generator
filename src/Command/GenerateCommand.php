@@ -40,7 +40,7 @@ class GenerateCommand extends Command
         Logger::getInstance()->setLogger(new ConsoleLogger($output));
         $configFile = $input->getOption('config');
         if (null !== $configFile) {
-            $options = require_once $configFile;
+            $options = require $configFile;
         } else {
             $options = [];
         }
