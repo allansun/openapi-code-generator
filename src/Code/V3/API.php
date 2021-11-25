@@ -131,27 +131,29 @@ class API extends AbstractClassGenerator implements APIInterface
 
         // Set responses
         $responseTypes = [];
-        foreach ($Operation->responses->getPatternedFields() as $Response) {
-            /** @var Response $Response */
-            foreach ((array)$Response->content as $contentType => $content) {
-                if ('application/json' != $contentType) {
-                    continue;
-                }
-                /** @var MediaType $content */
-                if ($content->schema && $content->schema->getPatternedField('_ref')) {
-                    $responseTypes[$content->schema->getPatternedField('_ref')] =
-                        $this->getUseAlias(Config::getInstance()->getModelNamespace() .
-                                           Utility::convertV3RefToClass($content->schema->getPatternedField('_ref')));
-                } elseif ($content->schema &&
-                          'array' == $content->schema->type &&
-                          $content->schema->items->getPatternedField('_ref')
-                ) {
-                    $responseTypes[$content->schema->items->getPatternedField('_ref')] =
-                        $this->getUseAlias(Config::getInstance()->getModelNamespace() .
-                                           Utility::convertV3RefToClass($content->schema->items->getPatternedField('_ref'))
-                        ) . '[]';
-                } elseif ($content->schema && $content->schema->type) {
-                    $responseTypes[$content->schema->type] = $content->schema->type;
+        if ($Operation->responses) {
+            foreach ($Operation->responses->getPatternedFields() as $Response) {
+                /** @var Response $Response */
+                foreach ((array)$Response->content as $contentType => $content) {
+                    if ('application/json' != $contentType) {
+                        continue;
+                    }
+                    /** @var MediaType $content */
+                    if ($content->schema && $content->schema->getPatternedField('_ref')) {
+                        $responseTypes[$content->schema->getPatternedField('_ref')] =
+                            $this->getUseAlias(Config::getInstance()->getModelNamespace() .
+                                               Utility::convertV3RefToClass($content->schema->getPatternedField('_ref')));
+                    } elseif ($content->schema &&
+                              'array' == $content->schema->type &&
+                              $content->schema->items->getPatternedField('_ref')
+                    ) {
+                        $responseTypes[$content->schema->items->getPatternedField('_ref')] =
+                            $this->getUseAlias(Config::getInstance()->getModelNamespace() .
+                                               Utility::convertV3RefToClass($content->schema->items->getPatternedField('_ref'))
+                            ) . '[]';
+                    } elseif ($content->schema && $content->schema->type) {
+                        $responseTypes[$content->schema->type] = $content->schema->type;
+                    }
                 }
             }
         }
@@ -194,9 +196,9 @@ class API extends AbstractClassGenerator implements APIInterface
         Operation $operation
     ): array {
         $parameters = [
-            self::PARAMETER_IN_PATH   => [],
-            self::PARAMETER_IN_BODY   => [],
-            self::PARAMETER_IN_QUERY  => [],
+            self::PARAMETER_IN_PATH => [],
+            self::PARAMETER_IN_BODY => [],
+            self::PARAMETER_IN_QUERY => [],
             self::PARAMETER_IN_HEADER => [],
             self::PARAMETER_IN_COOKIE => [],
         ];
@@ -219,35 +221,6 @@ class API extends AbstractClassGenerator implements APIInterface
         }
 
         return $parameters;
-    }
-
-    /**
-     * Sort method parameters to enforce the order of ($namepsace, $name)
-     *
-     * @param  Parameter[]  $parameters
-     *
-     * @return Parameter[]
-     */
-    private function sortMethodParameters(array $parameters): array
-    {
-        $sortedParameters = [];
-        $sortKeyOrder     = ['namespace', 'name'];
-        //Find items by expected name and put them into $sortedParameters in order
-        foreach ($sortKeyOrder as $sortKey) {
-            foreach ($parameters as $key => $Parameter) {
-                if ($sortKey == $Parameter->name) {
-                    $sortedParameters[] = $Parameter;
-                    unset($parameters[$key]);
-                }
-            }
-        }
-
-        //Put remaining items into $sortedParameters
-        foreach ($parameters as $Parameter) {
-            $sortedParameters[] = $Parameter;
-        }
-
-        return $sortedParameters;
     }
 
     protected function generateMethodBody(
@@ -288,6 +261,35 @@ class API extends AbstractClassGenerator implements APIInterface
         $body .= ");" . PHP_EOL;
 
         return $body;
+    }
+
+    /**
+     * Sort method parameters to enforce the order of ($namepsace, $name)
+     *
+     * @param  Parameter[]  $parameters
+     *
+     * @return Parameter[]
+     */
+    private function sortMethodParameters(array $parameters): array
+    {
+        $sortedParameters = [];
+        $sortKeyOrder     = ['namespace', 'name'];
+        //Find items by expected name and put them into $sortedParameters in order
+        foreach ($sortKeyOrder as $sortKey) {
+            foreach ($parameters as $key => $Parameter) {
+                if ($sortKey == $Parameter->name) {
+                    $sortedParameters[] = $Parameter;
+                    unset($parameters[$key]);
+                }
+            }
+        }
+
+        //Put remaining items into $sortedParameters
+        foreach ($parameters as $Parameter) {
+            $sortedParameters[] = $Parameter;
+        }
+
+        return $sortedParameters;
     }
 
     public function prepare(): void

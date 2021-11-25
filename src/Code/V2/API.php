@@ -128,23 +128,26 @@ class API extends AbstractClassGenerator implements APIInterface
 
         // Set responses
         $responseTypes = [];
-        foreach ($Operation->responses->getPatternedFields() as $Response) {
-            /** @var Response $Response */
-            /** @var Schema $content */
-            if ($Response->schema && !empty($Response->schema->_ref)) {
-                $responseTypes[$Response->schema->_ref] =
-                    $this->getUseAlias(Config::getInstance()->getModelNamespace() .
-                                       Utility::convertV2RefToClass($Response->schema->_ref));
-            } elseif ($Response->schema &&
-                      'array' == $Response->schema->type &&
-                      !empty($Response->schema->items['_ref'])
-            ) {
-                $responseTypes[$Response->schema->items['_ref']] =
-                    $this->getUseAlias(Config::getInstance()->getModelNamespace() .
-                                       Utility::convertV2RefToClass($Response->schema->items['_ref'])
-                    ) . '[]';
-            } elseif (!empty($Response->schema->type)) {
-                $responseTypes[$Response->schema->type] = $Response->schema->type;
+        if ($Operation->responses) {
+
+            foreach ($Operation->responses->getPatternedFields() as $Response) {
+                /** @var Response $Response */
+                /** @var Schema $content */
+                if ($Response->schema && !empty($Response->schema->_ref)) {
+                    $responseTypes[$Response->schema->_ref] =
+                        $this->getUseAlias(Config::getInstance()->getModelNamespace() .
+                                           Utility::convertV2RefToClass($Response->schema->_ref));
+                } elseif ($Response->schema &&
+                          'array' == $Response->schema->type &&
+                          !empty($Response->schema->items['_ref'])
+                ) {
+                    $responseTypes[$Response->schema->items['_ref']] =
+                        $this->getUseAlias(Config::getInstance()->getModelNamespace() .
+                                           Utility::convertV2RefToClass($Response->schema->items['_ref'])
+                        ) . '[]';
+                } elseif (!empty($Response->schema->type)) {
+                    $responseTypes[$Response->schema->type] = $Response->schema->type;
+                }
             }
         }
 
@@ -186,9 +189,9 @@ class API extends AbstractClassGenerator implements APIInterface
         Operation $operation
     ): array {
         $parameters = [
-            self::PARAMETER_IN_PATH   => [],
-            self::PARAMETER_IN_BODY   => [],
-            self::PARAMETER_IN_QUERY  => [],
+            self::PARAMETER_IN_PATH => [],
+            self::PARAMETER_IN_BODY => [],
+            self::PARAMETER_IN_QUERY => [],
             self::PARAMETER_IN_HEADER => [],
             self::PARAMETER_IN_COOKIE => [],
         ];
@@ -207,35 +210,6 @@ class API extends AbstractClassGenerator implements APIInterface
         $parameters[self::PARAMETER_IN_PATH] = $this->sortMethodParameters($parameters[self::PARAMETER_IN_PATH]);
 
         return $parameters;
-    }
-
-    /**
-     * Sort method parameters to enforce the order of ($namepsace, $name)
-     *
-     * @param  Parameter[]  $parameters
-     *
-     * @return Parameter[]
-     */
-    private function sortMethodParameters(array $parameters): array
-    {
-        $sortedParameters = [];
-        $sortKeyOrder     = ['namespace', 'name'];
-        //Find items by expected name and put them into $sortedParameters in order
-        foreach ($sortKeyOrder as $sortKey) {
-            foreach ($parameters as $key => $Parameter) {
-                if ($sortKey == $Parameter->name) {
-                    $sortedParameters[] = $Parameter;
-                    unset($parameters[$key]);
-                }
-            }
-        }
-
-        //Put remaining items into $sortedParameters
-        foreach ($parameters as $Parameter) {
-            $sortedParameters[] = $Parameter;
-        }
-
-        return $sortedParameters;
     }
 
     protected function generateMethodBody(
@@ -279,6 +253,35 @@ class API extends AbstractClassGenerator implements APIInterface
         $body .= ");" . PHP_EOL;
 
         return $body;
+    }
+
+    /**
+     * Sort method parameters to enforce the order of ($namepsace, $name)
+     *
+     * @param  Parameter[]  $parameters
+     *
+     * @return Parameter[]
+     */
+    private function sortMethodParameters(array $parameters): array
+    {
+        $sortedParameters = [];
+        $sortKeyOrder     = ['namespace', 'name'];
+        //Find items by expected name and put them into $sortedParameters in order
+        foreach ($sortKeyOrder as $sortKey) {
+            foreach ($parameters as $key => $Parameter) {
+                if ($sortKey == $Parameter->name) {
+                    $sortedParameters[] = $Parameter;
+                    unset($parameters[$key]);
+                }
+            }
+        }
+
+        //Put remaining items into $sortedParameters
+        foreach ($parameters as $Parameter) {
+            $sortedParameters[] = $Parameter;
+        }
+
+        return $sortedParameters;
     }
 
     public function prepare(): void
