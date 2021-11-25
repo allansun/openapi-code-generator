@@ -14,21 +14,13 @@ class ApiPlatformGeneratedCase implements FormatInterface
 
     public function split($word): array
     {
-        $words = explode('-', $word);
-        $model = $words[0];
-
-        if (!array_key_exists(1, $words)) {
-            return [$model];
-        }
-
-        $serializationGroup  = $words[1];
+        $serializationGroup  = str_replace('-', '|', $word);
         $serializationGroup  = str_replace('_', '|', $serializationGroup);
         $serializationGroup  = str_replace('.', '|', $serializationGroup);
         $serializationGroups = explode('|', $serializationGroup);
-        $serializationGroups = array_map(function () use ($word) {
+
+        return array_map(function ($word) {
             return ucfirst($word);
         }, $serializationGroups);
-
-        return [$model, implode('', $serializationGroups)];
     }
 }
