@@ -76,6 +76,10 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
                           $config->getOption(Config::OPTION_NAMESPACE_MODEL) .
                           '\\';
 
+        if (!isset($Operation->responses)) {
+            return;
+        }
+
         foreach ($Operation->responses->getPatternedFields() as $statusCode => $Response) {
             /** @var Response $Response */
             if ($Response->content && array_key_exists('application/json', $Response->content)) {

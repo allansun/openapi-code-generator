@@ -131,7 +131,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         // Set responses
         $responseTypes = [];
-        if ($Operation->responses) {
+        if (isset($Operation->responses)) {
             foreach ($Operation->responses->getPatternedFields() as $Response) {
                 /** @var Response $Response */
                 foreach ((array)$Response->content as $contentType => $content) {

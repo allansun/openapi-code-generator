@@ -75,6 +75,10 @@ class ResponseTypes extends AbstractClassGenerator
                           $config->getOption(Config::OPTION_NAMESPACE_MODEL) .
                           '\\';
 
+        if (!isset($Operation->responses)) {
+            return;
+        }
+
         foreach ($Operation->responses->getPatternedFields() as $statusCode => $Response) {
             /** @var Response $Response */
             if (!empty($Response->schema)) {
