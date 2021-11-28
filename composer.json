@@ -19,7 +19,7 @@
     "require": {
         "php": ">=7.2",
         "ext-json": "*",
-        "allansun/openapi-runtime": "v3.x-dev",
+        "allansun/openapi-runtime": "3.*",
         "allansun/openapi-parser": "^2.1.2",
         "laminas/laminas-code": "^4",
         "mattketmo/camel": "^v1.1.0",
@@ -48,6 +48,6 @@
     "bin": [
         "bin/openapi-code-generator"
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true
 }
