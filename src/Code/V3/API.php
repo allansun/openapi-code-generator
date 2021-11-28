@@ -280,8 +280,8 @@ class API extends AbstractClassGenerator implements APIInterface
                  "'" . strtoupper($operation) . "'," . PHP_EOL .
                  "\"$path\"," . PHP_EOL .
                  ($requestHasBody ? "\$Model->getArrayCopy()" : 'null') . ',' . PHP_EOL .
-                 ($requestHasQuery ? "\$queries" : 'null') . ',' . PHP_EOL .
-                 ($requestHasHeader ? "\$headers" : 'null') . PHP_EOL .
+                 ($requestHasQuery ? "\$queries" : '[]') . ',' . PHP_EOL .
+                 ($requestHasHeader ? "\$headers" : '[]') . PHP_EOL .
                  ');' . PHP_EOL;
 
         return $body;
