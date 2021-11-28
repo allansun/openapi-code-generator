@@ -314,7 +314,6 @@ class API extends AbstractClassGenerator implements APIInterface
         $this->ClassGenerator
             ->setNamespaceName($this->namespace)
             ->setName(Utility::filterSpecialWord($this->classname))
-            ->addUse(Config::getInstance()->getOption(Config::OPTION_API_BASE_CLASS), 'AbstractAPI')
             ->setExtendedClass('AbstractAPI');
 
         $this->setClass($this->ClassGenerator);
