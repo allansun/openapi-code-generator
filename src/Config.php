@@ -4,6 +4,7 @@ namespace OpenAPI\CodeGenerator;
 
 use Exception;
 use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
+use OpenAPI\CodeGenerator\Code\JsonResponseHandlerStack;
 use OpenAPI\Runtime\AbstractAPI;
 use OpenAPI\Runtime\AbstractModel;
 use OpenAPI\Runtime\ResponseTypes;
@@ -27,6 +28,10 @@ class Config
 
     public const OPTION_RESPONSE_TYPES_BASE_CLASS = 'RESPONSE_TYPES_BASE_CLASS';
     public const OPTION_RESPONSE_TYPES_GENERATOR_CLASS = 'RESPONSE_TYPES_GENERATOR_CLASS';
+
+    public const OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS = 'OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS';
+    public const OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS = 'OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS';
+
 
     public const OPTION_CODE_GENERATOR_CLASS = 'CODE_GENERATOR_CLASS';
 
@@ -60,18 +65,21 @@ class Config
         $resolver->setDefaults([
             self::OPTION_ROOT_SOURCE_DIR => __DIR__ . '/../generated/',
 
-            self::OPTION_NAMESPACE_ROOT  => 'App',
-            self::OPTION_NAMESPACE_API   => 'Api',
+            self::OPTION_NAMESPACE_ROOT => 'App',
+            self::OPTION_NAMESPACE_API => 'Api',
             self::OPTION_NAMESPACE_MODEL => 'Model',
 
-            self::OPTION_API_BASE_CLASS      => AbstractAPI::class,
+            self::OPTION_API_BASE_CLASS => AbstractAPI::class,
             self::OPTION_API_GENERATOR_CLASS => self::DEFAULT,
 
-            self::OPTION_MODEL_BASE_CLASS      => AbstractModel::class,
+            self::OPTION_MODEL_BASE_CLASS => AbstractModel::class,
             self::OPTION_MODEL_GENERATOR_CLASS => self::DEFAULT,
 
-            self::OPTION_RESPONSE_TYPES_BASE_CLASS      => ResponseTypes::class,
+            self::OPTION_RESPONSE_TYPES_BASE_CLASS => ResponseTypes::class,
             self::OPTION_RESPONSE_TYPES_GENERATOR_CLASS => self::DEFAULT,
+
+            self::OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS => JsonResponseHandlerStack::class,
+            self::OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS => self::DEFAULT,
 
             self::OPTION_CODE_GENERATOR_CLASS => null,
 

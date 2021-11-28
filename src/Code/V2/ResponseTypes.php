@@ -1,8 +1,6 @@
 <?php
 
-
 namespace OpenAPI\CodeGenerator\Code\V2;
-
 
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
@@ -45,7 +43,10 @@ class ResponseTypes extends AbstractClassGenerator
         $this->setClass($this->ClassGenerator);
 
         $this->initFilename();
+    }
 
+    public function write(): AbstractClassGenerator
+    {
         foreach ($this->spec->getPatternedFields() as $PathItemObject) {
             foreach (APIOperations::OPERATIONS as $operation) {
                 $OperationObject = $PathItemObject->$operation;
@@ -54,10 +55,7 @@ class ResponseTypes extends AbstractClassGenerator
                 }
             }
         }
-    }
 
-    public function write(): AbstractClassGenerator
-    {
         $this->ClassGenerator->addProperty('types',
             self::$responseTypes,
             [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC]);
@@ -93,8 +91,5 @@ class ResponseTypes extends AbstractClassGenerator
                 }
             }
         }
-
     }
-
-
 }

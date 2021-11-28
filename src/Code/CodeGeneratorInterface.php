@@ -21,4 +21,6 @@ interface CodeGeneratorInterface
     public function generateModels();
 
     public function generateResponseTypes();
+
+    public function generateCommonFiles();
 }

@@ -17,6 +17,7 @@ use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
+use OpenAPI\Schema\V3\Header;
 use OpenAPI\Schema\V3\MediaType;
 use OpenAPI\Schema\V3\OpenAPI;
 use OpenAPI\Schema\V3\Operation;
@@ -73,7 +74,9 @@ class API extends AbstractClassGenerator implements APIInterface
         $queryParameters = $parameters[self::PARAMETER_IN_QUERY];
         /** @var MediaType $bodyParameters */
         $bodyParameters = $parameters[self::PARAMETER_IN_BODY];
-        $tags           = [];
+        /** @var Header[] $headerParameters */
+        $headerParameters = $parameters[self::PARAMETER_IN_HEADER];
+        $tags             = [];
 
         // Set method parameters
         if (0 < count($methodParameters)) {
@@ -127,6 +130,20 @@ class API extends AbstractClassGenerator implements APIInterface
             }
             $tags[] = new ParamTag('queries', ['array'], $queryOptionsDescription);
             $MethodGenerator->setParameter(new ParameterGenerator('queries', 'array', []));
+        }
+
+        // Set header parameters
+        if (0 < count($headerParameters)) {
+            $headerOptionsDescription = 'options:' . PHP_EOL;
+            foreach ($headerParameters as $headerParameter) {
+                /** @var Parameter $headerParameter */
+                $headerOptionsDescription .= "'" . $headerParameter->name . "'" . "\t" .
+                                             $headerParameter->schema->type .
+                                             "\t" . $headerParameter->description .
+                                             PHP_EOL;
+            }
+            $tags[] = new ParamTag('headers', ['array'], $headerOptionsDescription);
+            $MethodGenerator->setParameter(new ParameterGenerator('headers', 'array', []));
         }
 
         // Set responses
@@ -230,35 +247,42 @@ class API extends AbstractClassGenerator implements APIInterface
         array $parameters
     ):
     string {
-        $body               = '';
-        $queryParameterBody = "\t[" . PHP_EOL;
-
-
-        foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
-            /** @var Schema $Parameter */
-            if ($Parameter && $Parameter->getPatternedField('_ref')) {
-                $queryParameterBody .= "\t\t'json' => \$Model->getArrayCopy()," . PHP_EOL;
-            }
-        }
+        $body             = '';
+        $requestHasBody   = false;
+        $requestHasQuery  = false;
+        $requestHasHeader = false;
 
         foreach ($parameters[self::PARAMETER_IN_PATH] as $Parameter) {
             /** @var Parameter $Parameter */
             $path = str_replace('{' . $Parameter->name . '}', '{$' . $Parameter->name . '}', $path);
         }
 
+        foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
+            /** @var Schema $Parameter */
+            if ($Parameter && $Parameter->getPatternedField('_ref')) {
+                $requestHasBody = true;
+            }
+        }
 
         if (0 < count($parameters[self::PARAMETER_IN_QUERY])) {
-            $queryParameterBody .= "\t\t'query' => \$queries," . PHP_EOL;
+            $requestHasQuery = true;
         }
-        $queryParameterBody .= "\t]" . PHP_EOL;
+
+        if (0 < count($parameters[self::PARAMETER_IN_HEADER])) {
+            $requestHasHeader = true;
+        }
 
         // Force $path to be relative url to prevent URI (not URL) being forced to absolute path
         $path = Utility::getRelativeUrl($path);
 
-        $body .= "return \$this->client->request('{$Operation->operationId}','" . strtoupper($operation) .
-                 "',\"{$path}\"," . PHP_EOL;
-        $body .= $queryParameterBody;
-        $body .= ");" . PHP_EOL;
+        $body .= "return \$this->request(" . PHP_EOL .
+                 "'$Operation->operationId'," . PHP_EOL .
+                 "'" . strtoupper($operation) . "'," . PHP_EOL .
+                 "\"$path\"," . PHP_EOL .
+                 ($requestHasBody ? "\$Model->getArrayCopy()" : 'null') . ',' . PHP_EOL .
+                 ($requestHasQuery ? "\$queries" : 'null') . ',' . PHP_EOL .
+                 ($requestHasHeader ? "\$headers" : 'null') . PHP_EOL .
+                 ');' . PHP_EOL;
 
         return $body;
     }
@@ -302,7 +326,7 @@ class API extends AbstractClassGenerator implements APIInterface
         $this->ClassGenerator
             ->setNamespaceName($this->namespace)
             ->setName(Utility::filterSpecialWord($this->classname))
-            ->addUse(Config::getInstance()->getOption(Config::OPTION_API_BASE_CLASS), 'AbstractAPI')
+            ->addUse(Config::getInstance()->getOption(Config::OPTION_API_BASE_CLASS))
             ->setExtendedClass('AbstractAPI');
 
         $this->setClass($this->ClassGenerator);

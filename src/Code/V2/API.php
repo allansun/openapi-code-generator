@@ -17,6 +17,7 @@ use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
+use OpenAPI\Schema\V2\Header;
 use OpenAPI\Schema\V2\Operation;
 use OpenAPI\Schema\V2\Parameter;
 use OpenAPI\Schema\V2\Response;
@@ -72,7 +73,9 @@ class API extends AbstractClassGenerator implements APIInterface
         $queryParameters = $parameters[self::PARAMETER_IN_QUERY];
         /** @var Parameter $bodyParameter */
         $bodyParameter = $parameters[self::PARAMETER_IN_BODY];
-        $tags          = [];
+        /** @var Header[] $headerParameters */
+        $headerParameters = $parameters[self::PARAMETER_IN_HEADER];
+        $tags             = [];
 
         // Set method parameters
         if (0 < count($methodParameters)) {
@@ -124,6 +127,20 @@ class API extends AbstractClassGenerator implements APIInterface
             }
             $tags[] = new ParamTag('queries', ['array'], $queryOptionsDescription);
             $MethodGenerator->setParameter(new ParameterGenerator('queries', 'array', []));
+        }
+
+        // Set header parameters
+        if (0 < count($headerParameters)) {
+            $headerOptionsDescription = 'options:' . PHP_EOL;
+            foreach ($headerParameters as $headerParameter) {
+                /** @var Parameter $headerParameter */
+                $headerOptionsDescription .= "'" . $headerParameter->name . "'" . "\t" .
+                                             $headerParameter->schema->type .
+                                             "\t" . $headerParameter->description .
+                                             PHP_EOL;
+            }
+            $tags[] = new ParamTag('headers', ['array'], $headerOptionsDescription);
+            $MethodGenerator->setParameter(new ParameterGenerator('headers', 'array', []));
         }
 
         // Set responses
@@ -218,38 +235,42 @@ class API extends AbstractClassGenerator implements APIInterface
         array $parameters
     ):
     string {
-        $body               = '';
-        $queryParameterBody = "\t[" . PHP_EOL;
-
-
-        if (!empty($parameters[self::PARAMETER_IN_BODY])) {
-            $Parameter = $parameters[self::PARAMETER_IN_BODY];
-            /** @var Parameter $Parameter */
-            if (!empty($Parameter->schema->_ref)) {
-                $queryParameterBody .= "\t\t'json' => \$Model->getArrayCopy()," . PHP_EOL;
-            }
-        }
+        $body             = '';
+        $requestHasBody   = false;
+        $requestHasQuery  = false;
+        $requestHasHeader = false;
 
         foreach ($parameters[self::PARAMETER_IN_PATH] as $Parameter) {
             /** @var Parameter $Parameter */
             $path = str_replace('{' . $Parameter->name . '}', '{$' . $Parameter->name . '}', $path);
         }
 
+        foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
+            /** @var Schema $Parameter */
+            if ($Parameter && $Parameter->getPatternedField('_ref')) {
+                $requestHasBody = true;
+            }
+        }
 
         if (0 < count($parameters[self::PARAMETER_IN_QUERY])) {
-            $queryParameterBody .= "\t\t'query' => \$queries," . PHP_EOL;
+            $requestHasQuery = true;
         }
-        $queryParameterBody .= "\t]" . PHP_EOL;
 
+        if (0 < count($parameters[self::PARAMETER_IN_HEADER])) {
+            $requestHasHeader = true;
+        }
+
+        // Force $path to be relative url to prevent URI (not URL) being forced to absolute path
         $path = Utility::getRelativeUrl($path);
-        if (!empty($this->swagger->basePath)) {
-            $path = Utility::getRelativeUrl($this->swagger->basePath) . '/' . $path;
-        }
 
-        $body .= "return \$this->client->request('$Operation->operationId','" . strtoupper($operation) .
-                 "',\"{$path}\"," . PHP_EOL;
-        $body .= $queryParameterBody;
-        $body .= ");" . PHP_EOL;
+        $body .= "return \$this->request(" . PHP_EOL .
+                 "'$Operation->operationId'," . PHP_EOL .
+                 "'" . strtoupper($operation) . "'," . PHP_EOL .
+                 "\"$path\"," . PHP_EOL .
+                 ($requestHasBody ? "\$Model->getArrayCopy()" : 'null') . ',' . PHP_EOL .
+                 ($requestHasQuery ? "\$queries" : 'null') . ',' . PHP_EOL .
+                 ($requestHasHeader ? "\$headers" : 'null') . PHP_EOL .
+                 ');' . PHP_EOL;
 
         return $body;
     }

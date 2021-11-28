@@ -98,9 +98,10 @@ class GenerateCommand extends Command
         /** @var CodeGeneratorInterface $CodeGenerator */
         $CodeGenerator = new $codeGeneratorClass($spec);
 
+        $CodeGenerator->generateResponseTypes();
+        $CodeGenerator->generateCommonFiles();
         $CodeGenerator->generateModels();
         $CodeGenerator->generateApis();
-        $CodeGenerator->generateResponseTypes();
 
     }
 

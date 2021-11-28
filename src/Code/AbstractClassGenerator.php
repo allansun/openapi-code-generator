@@ -119,10 +119,6 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
 
     protected function getUseAlias(string $fullClassName): string
     {
-//        if (0 !== strpos($fullClassName, '\\')) {
-//            $fullClassName = '\\' . $fullClassName;
-//        }
-
         $classInfo = explode('\\', $fullClassName);
         $className = array_pop($classInfo);
 
