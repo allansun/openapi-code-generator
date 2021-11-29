@@ -41,6 +41,8 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
      */
     protected $rootSourceFileDirectory = null;
 
+    abstract public function prepare(): void;
+
     public function initFilename(): string
     {
         if (!$this->filename) {
@@ -80,16 +82,6 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
         return $this;
     }
 
-    protected function getNamespaceDirectory(): string
-    {
-        return str_replace('\\', DIRECTORY_SEPARATOR,
-                str_replace(Config::getInstance()->getOption(Config::OPTION_NAMESPACE_ROOT), '', $this->getNamespace())
-               ) .
-               DIRECTORY_SEPARATOR;
-    }
-
-    abstract public function prepare(): void;
-
     public function write(): self
     {
         $FileSystem = new Filesystem();
@@ -98,6 +90,14 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
         parent::write();
 
         return $this;
+    }
+
+    protected function getNamespaceDirectory(): string
+    {
+        return str_replace('\\', DIRECTORY_SEPARATOR,
+                str_replace(Config::getInstance()->getOption(Config::OPTION_NAMESPACE_ROOT), '', $this->getNamespace())
+               ) .
+               DIRECTORY_SEPARATOR;
     }
 
     protected function getRootNamespace()

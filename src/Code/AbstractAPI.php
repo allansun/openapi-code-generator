@@ -4,6 +4,7 @@ namespace OpenAPI\CodeGenerator\Code;
 
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\ParameterGenerator;
 use Laminas\Code\Generator\PropertyValueGenerator;
 use Laminas\Code\Generator\ValueGenerator;
 use OpenAPI\CodeGenerator\Config;
@@ -32,6 +33,7 @@ class AbstractAPI extends AbstractClassGenerator
             ->setExtendedClass('BaseClass')
             ->setImplementedInterfaces(['APIInterface'])
             ->addUse($this->getRootNamespace() . '\\JsonResponseHandlerStack', 'ResponseHandlerStack')
+            ->addUse($this->namespace . '\\HttpClientInterface')
             ->addProperty('responseHandlerStack',
                 new PropertyValueGenerator(
                     'ResponseHandlerStack::class',
@@ -40,6 +42,16 @@ class AbstractAPI extends AbstractClassGenerator
                 [AbstractMemberGenerator::FLAG_PROTECTED, AbstractMemberGenerator::FLAG_STATIC]);
 
         $this->setClass($this->ClassGenerator);
+
+        $this->ClassGenerator->addMethod(
+            '__construct',
+            [
+                new ParameterGenerator('client', '?' . $this->namespace . '\\HttpClientInterface',
+                    new ValueGenerator('null', ValueGenerator::TYPE_CONSTANT))
+            ],
+            [AbstractMemberGenerator::FLAG_PUBLIC],
+            'parent::__construct($client);'
+        );
 
         $this->initFilename();
 

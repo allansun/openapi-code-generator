@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c5645d8f759ff8da649e21dbe6f591f",
+    "content-hash": "4e1e66ec57ca099e3d00a5ef0f1fce05",
     "packages": [
         {
             "name": "allansun/openapi-parser",
@@ -55,16 +55,16 @@
         },
         {
             "name": "allansun/openapi-runtime",
-            "version": "3.0.0",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allansun/openapi-runtime.git",
-                "reference": "d77dfa1bec663059ad6dbdcf21dd91b22c8d85f5"
+                "reference": "b59c43c6b2ab14054183fead7ea8e902412a0705"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/d77dfa1bec663059ad6dbdcf21dd91b22c8d85f5",
-                "reference": "d77dfa1bec663059ad6dbdcf21dd91b22c8d85f5",
+                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/b59c43c6b2ab14054183fead7ea8e902412a0705",
+                "reference": "b59c43c6b2ab14054183fead7ea8e902412a0705",
                 "shasum": ""
             },
             "require": {
@@ -115,9 +115,9 @@
             ],
             "support": {
                 "issues": "https://github.com/allansun/openapi-runtime/issues",
-                "source": "https://github.com/allansun/openapi-runtime/tree/3.0.0"
+                "source": "https://github.com/allansun/openapi-runtime/tree/3.0.2"
             },
-            "time": "2021-11-28T12:28:12+00:00"
+            "time": "2021-11-29T00:38:11+00:00"
         },
         {
             "name": "composer/semver",
@@ -5340,7 +5340,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.2",
+        "php": ">=7.4",
         "ext-json": "*"
     },
     "platform-dev": [],

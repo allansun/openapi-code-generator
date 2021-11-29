@@ -2,21 +2,15 @@
 
 namespace OpenAPI\CodeGenerator\Code\V2;
 
-use OpenAPI\CodeGenerator\Code\AbstractAPI as AbstractAPIGenerator;
-use OpenAPI\CodeGenerator\Code\APIInterface as APIInterfaceGenerator;
+use OpenAPI\CodeGenerator\Code\AbstractCodeGenerator;
 use OpenAPI\CodeGenerator\Code\APIOperations;
 use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
-use OpenAPI\CodeGenerator\Code\JsonResponseHandlerStack;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\Schema\V2 as Schema;
 
-class CodeGenerator implements CodeGeneratorInterface
+class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterface
 {
-    /**
-     * @var Config
-     */
-    protected $config;
     /**
      * @var Schema\Swagger
      */
@@ -60,27 +54,6 @@ class CodeGenerator implements CodeGeneratorInterface
             $classGenerator->write();
             Logger::getInstance()->debug($classGenerator->getFilename());
         }
-    }
-
-    public function generateCommonFiles()
-    {
-        $class = $this->config->getOption(Config::OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS);
-        $class = Config::DEFAULT == $class ? JsonResponseHandlerStack::class : $class;
-
-        $classGenerator = new $class();
-        $classGenerator->prepare();
-        $classGenerator->write();
-        Logger::getInstance()->debug($classGenerator->getFilename());
-
-        $APIInterfaceGenerator = new APIInterfaceGenerator();
-        $APIInterfaceGenerator->prepare();
-        $APIInterfaceGenerator->write();
-        Logger::getInstance()->debug($APIInterfaceGenerator->getFilename());
-
-        $AbstractAPIGenerator = new AbstractAPIGenerator();
-        $AbstractAPIGenerator->prepare();
-        $AbstractAPIGenerator->write();
-        Logger::getInstance()->debug($AbstractAPIGenerator->getFilename());
     }
 
     public function generateModels()
