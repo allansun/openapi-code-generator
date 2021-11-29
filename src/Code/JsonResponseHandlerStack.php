@@ -4,7 +4,6 @@ namespace OpenAPI\CodeGenerator\Code;
 
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
-use OpenAPI\CodeGenerator\Config;
 use OpenAPI\Runtime\ResponseHandlerStack\JsonResponseHandlerStack as BaseClass;
 
 class JsonResponseHandlerStack extends AbstractClassGenerator
@@ -24,7 +23,6 @@ class JsonResponseHandlerStack extends AbstractClassGenerator
         $this->ClassGenerator
             ->setNamespaceName($this->getRootNamespace())
             ->setName('JsonResponseHandlerStack')
-            ->addUse(Config::getInstance()->getOption(Config::OPTION_RESPONSE_TYPES_BASE_CLASS), 'ResponseTypes')
             ->addUse(BaseClass::class, 'BaseClass')
             ->setExtendedClass('BaseClass');
 
