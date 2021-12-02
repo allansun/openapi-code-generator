@@ -122,7 +122,7 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
         $classInfo = explode('\\', $fullClassName);
         $className = array_pop($classInfo);
 
-        if ($className == $this->ClassGenerator->getName()) {
+        if (strtolower($className) == strtolower($this->ClassGenerator->getName())) {
             $className = $className . 'Model';
         }
 
