@@ -4,7 +4,7 @@ namespace OpenAPI\CodeGenerator;
 
 use Exception;
 use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
-use OpenAPI\CodeGenerator\Code\JsonResponseHandlerStack;
+use OpenAPI\CodeGenerator\Code\ResponseHandlerStack;
 use OpenAPI\Runtime\AbstractAPI;
 use OpenAPI\Runtime\AbstractModel;
 use OpenAPI\Runtime\ResponseTypes;
@@ -29,11 +29,13 @@ class Config
     public const OPTION_RESPONSE_TYPES_BASE_CLASS = 'RESPONSE_TYPES_BASE_CLASS';
     public const OPTION_RESPONSE_TYPES_GENERATOR_CLASS = 'RESPONSE_TYPES_GENERATOR_CLASS';
 
-    public const OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS = 'OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS';
-    public const OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS = 'OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS';
-
+    public const OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS = 'RESPONSE_HANDLER_STACK_BASE_CLASS';
+    public const OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS = 'RESPONSE_HANDLER_STACK_GENERATOR_CLASS';
 
     public const OPTION_CODE_GENERATOR_CLASS = 'CODE_GENERATOR_CLASS';
+
+    public const OPTION_API_ALLOW_ERROR = 'API_ALLOW_ERROR';
+    public const OPTION_API_ALLOW_404 = 'API_ALLOW_404';
 
     /**
      * Laminas code generator doesn't allow controlling line length, nor dose PHPCSFixer.
@@ -60,6 +62,20 @@ class Config
         $this->options = $resolver->resolve($options);
     }
 
+    public static function reset(): void
+    {
+        self::$instance = null;
+    }
+
+    public static function getInstance($options = []): Config
+    {
+        if (!self::$instance) {
+            self::$instance = new self($options);
+        }
+
+        return self::$instance;
+    }
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -78,10 +94,13 @@ class Config
             self::OPTION_RESPONSE_TYPES_BASE_CLASS => ResponseTypes::class,
             self::OPTION_RESPONSE_TYPES_GENERATOR_CLASS => self::DEFAULT,
 
-            self::OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS => JsonResponseHandlerStack::class,
+            self::OPTION_RESPONSE_HANDLER_STACK_BASE_CLASS => ResponseHandlerStack::class,
             self::OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS => self::DEFAULT,
 
             self::OPTION_CODE_GENERATOR_CLASS => null,
+
+            self::OPTION_API_ALLOW_ERROR => true,
+            self::OPTION_API_ALLOW_404 => true,
 
             self::OPTION_FORMATTING_WORD_WRAP => true,
         ])->setAllowedValues(self::OPTION_CODE_GENERATOR_CLASS, function ($values) {
@@ -113,19 +132,5 @@ class Config
     public function getResponseTypesNamespace(): string
     {
         return $this->getOption(self::OPTION_NAMESPACE_ROOT) . '\\';
-    }
-
-    public static function reset(): void
-    {
-        self::$instance = null;
-    }
-
-    public static function getInstance($options = []): Config
-    {
-        if (!self::$instance) {
-            self::$instance = new self($options);
-        }
-
-        return self::$instance;
     }
 }

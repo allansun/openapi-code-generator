@@ -32,7 +32,7 @@ abstract class AbstractCodeGenerator implements CodeGeneratorInterface
     public function generateCommonFiles()
     {
         $class = $this->config->getOption(Config::OPTION_RESPONSE_HANDLER_STACK_GENERATOR_CLASS);
-        $class = Config::DEFAULT == $class ? JsonResponseHandlerStack::class : $class;
+        $class = Config::DEFAULT == $class ? ResponseHandlerStack::class : $class;
 
         $classGenerator = new $class();
         $classGenerator->prepare();

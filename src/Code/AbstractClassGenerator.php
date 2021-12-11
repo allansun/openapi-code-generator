@@ -19,7 +19,7 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
     const PARAMETER_IN_HEADER = 'header';
     const PARAMETER_IN_COOKIE = 'cookie';
 
-    protected static $internalPhpTypes = [
+    protected static array $internalPhpTypes = [
         'void',
         'int',
         'float',
@@ -82,7 +82,7 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
         return $this;
     }
 
-    public function write(): self
+    public function write(): ClassGeneratorInterface
     {
         $FileSystem = new Filesystem();
         $FileSystem->mkdir($this->getRootSourceFileDirectory() . $this->getNamespaceDirectory(), 0755);
