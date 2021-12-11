@@ -6,7 +6,6 @@ namespace OpenAPI\CodeGenerator\Code\V3;
 
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
-use Laminas\Code\Generator\ValueGenerator;
 use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Code\APIOperations;
 use OpenAPI\CodeGenerator\Config;
@@ -19,11 +18,11 @@ use OpenAPI\Schema\V3\Response;
 
 class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInterface
 {
-    private static $responseTypes = [];
+    private static array $responseTypes = [];
     /**
      * @var Paths
      */
-    private $spec;
+    private Paths $spec;
 
     public function __construct(Paths $spec)
     {

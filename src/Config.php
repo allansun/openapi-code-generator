@@ -34,8 +34,8 @@ class Config
 
     public const OPTION_CODE_GENERATOR_CLASS = 'CODE_GENERATOR_CLASS';
 
-    public const OPTION_API_ALLOW_ERROR = 'API_ALLOW_ERROR';
-    public const OPTION_API_ALLOW_404 = 'API_ALLOW_404';
+    public const OPTION_API_ALLOW_ERROR_RESPONSE = 'API_ALLOW_ERROR_RESPONSE';
+    public const OPTION_API_ALLOW_404_RESPONSE = 'API_ALLOW_404_RESPONSE';
 
     /**
      * Laminas code generator doesn't allow controlling line length, nor dose PHPCSFixer.
@@ -47,12 +47,12 @@ class Config
     /**
      * @var null|Config
      */
-    private static $instance = null;
+    private static ?Config $instance = null;
 
     /**
      * @var array
      */
-    private $options;
+    private array $options;
 
     public function __construct(array $options = [])
     {
@@ -99,8 +99,8 @@ class Config
 
             self::OPTION_CODE_GENERATOR_CLASS => null,
 
-            self::OPTION_API_ALLOW_ERROR => true,
-            self::OPTION_API_ALLOW_404 => true,
+            self::OPTION_API_ALLOW_ERROR_RESPONSE => true,
+            self::OPTION_API_ALLOW_404_RESPONSE => true,
 
             self::OPTION_FORMATTING_WORD_WRAP => true,
         ])->setAllowedValues(self::OPTION_CODE_GENERATOR_CLASS, function ($values) {

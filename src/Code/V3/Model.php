@@ -19,12 +19,12 @@ class Model extends AbstractClassGenerator implements ModelInterface
     /**
      * @var Schema
      */
-    protected $Schema;
+    protected Schema $Schema;
 
     /**
      * @var string
      */
-    private $classname;
+    private string $classname;
 
     /**
      * Model constructor.
@@ -92,7 +92,7 @@ class Model extends AbstractClassGenerator implements ModelInterface
         foreach ($this->Schema->properties->getPatternedFields() as $key => $property) {
             $property = (array)$property;
 
-            if (false !== strpos($key, '$')) {
+            if (str_contains($key, '$')) {
                 $key = str_replace('$', '_', $key);
             }
 
@@ -160,7 +160,7 @@ class Model extends AbstractClassGenerator implements ModelInterface
         string $dataType,
         bool $isArray = false
     ): string {
-        if (0 === strpos($dataType, '#')) {
+        if (str_starts_with($dataType, '#')) {
             $dataType = '\\' . Config::getInstance()->getModelNamespace() . Utility::convertV3RefToClass($dataType);
         } else {
             if (array_key_exists($dataType, DataTypes::DATATYPES)) {

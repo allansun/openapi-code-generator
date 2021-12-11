@@ -6,6 +6,7 @@ namespace OpenAPI\CodeGenerator\Code\V3;
 use Camel\CaseTransformer;
 use Camel\Format\CamelCase;
 use Camel\Format\SnakeCase;
+use JetBrains\PhpStorm\ArrayShape;
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\ParamTag;
@@ -30,11 +31,11 @@ class API extends AbstractClassGenerator implements APIInterface
     /**
      * @var OpenAPI
      */
-    private $openAPI;
+    private OpenAPI $openAPI;
     /**
      * @var string
      */
-    private $classname;
+    private string $classname;
 
     public function __construct(string $classname, OpenAPI $openAPI)
     {
@@ -209,7 +210,13 @@ class API extends AbstractClassGenerator implements APIInterface
      *
      * @return array[]
      */
-    protected function parseParameters(
+    #[ArrayShape([
+        self::PARAMETER_IN_PATH => "array|\OpenAPI\Schema\V3\Parameter[]",
+        self::PARAMETER_IN_BODY => "array|mixed",
+        self::PARAMETER_IN_QUERY => "array",
+        self::PARAMETER_IN_HEADER => "array",
+        self::PARAMETER_IN_COOKIE => "array"
+    ])] protected function parseParameters(
         Operation $operation
     ): array {
         $parameters = [
@@ -229,7 +236,7 @@ class API extends AbstractClassGenerator implements APIInterface
         $parameters[self::PARAMETER_IN_PATH] = $this->sortMethodParameters($parameters[self::PARAMETER_IN_PATH]);
 
         if (isset($operation->requestBody) && property_exists($operation->requestBody, 'content')) {
-            foreach ((array)$operation->requestBody->content as $type => $content) {
+            foreach ($operation->requestBody->content as $type => $content) {
                 if ('application/json' != $type) {
                     continue;
                 }

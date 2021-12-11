@@ -8,15 +8,17 @@ use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\Schema\V2 as Schema;
+use OpenAPI\Schema\V2\Swagger;
+use OpenAPI\Schema\V3\OpenAPI;
 
 class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterface
 {
     /**
      * @var Schema\Swagger
      */
-    private $spec;
+    private Swagger $spec;
 
-    public function __construct($spec)
+    public function __construct(OpenAPI|Swagger $spec)
     {
         $this->spec   = $spec;
         $this->config = Config::getInstance();
@@ -63,7 +65,7 @@ class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterf
 
         foreach ($this->spec->definitions->getPatternedFields() as $name => $Schema) {
             //Filter out JsonLD (maybe we should implement this in the future?)
-            if (false !== strpos($name, '.jsonld')) {
+            if (str_contains($name, '.jsonld')) {
                 continue;
             }
             $classGenerator = new $class($name, $Schema);

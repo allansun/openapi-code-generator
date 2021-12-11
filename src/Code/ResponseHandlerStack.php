@@ -39,14 +39,14 @@ class ResponseHandlerStack extends AbstractClassGenerator
 \$handlers[] = \$jsonResponsHandler;
 EOF;
 
-        if ($config->getOption(Config::OPTION_API_ALLOW_ERROR)) {
+        if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
             $this->ClassGenerator->addUse(AbnormalResponseStatusHandler::class);
             $body .= <<<EOF
 \$handlers[] = new AbnormalResponseStatusHandler();
 EOF;
         }
 
-        if ($config->getOption(Config::OPTION_API_ALLOW_404)) {
+        if ($config->getOption(Config::OPTION_API_ALLOW_404_RESPONSE)) {
             $this->ClassGenerator->addUse(Allow404ResponseStatusHandler::class);
             $body .= <<<EOF
 \$handlers[] = new Allow404ResponseStatusHandler();

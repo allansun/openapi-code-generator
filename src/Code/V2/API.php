@@ -6,6 +6,7 @@ namespace OpenAPI\CodeGenerator\Code\V2;
 use Camel\CaseTransformer;
 use Camel\Format\CamelCase;
 use Camel\Format\SnakeCase;
+use JetBrains\PhpStorm\ArrayShape;
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\ParamTag;
@@ -29,11 +30,11 @@ class API extends AbstractClassGenerator implements APIInterface
     /**
      * @var Swagger
      */
-    private $swagger;
+    private Swagger $swagger;
     /**
      * @var string
      */
-    private $classname;
+    private string $classname;
 
     public function __construct(string $classname, Swagger $swagger)
     {
@@ -178,6 +179,23 @@ class API extends AbstractClassGenerator implements APIInterface
         $this->ClassGenerator->addMethodFromGenerator($MethodGenerator);
     }
 
+    public function prepare(): void
+    {
+        $config = Config::getInstance();
+        $this->setNamespace(rtrim($this->getRootNamespace() . '\\' .
+                                  $config->getOption(Config::OPTION_NAMESPACE_API)));
+
+        $this->ClassGenerator = new ClassGenerator();
+        $this->ClassGenerator
+            ->setNamespaceName($this->namespace)
+            ->setName(Utility::filterSpecialWord($this->classname))
+            ->setExtendedClass('AbstractAPI');
+
+        $this->setClass($this->ClassGenerator);
+
+        $this->initFilename();
+    }
+
     protected function parseApiAction(Operation $Operation, string $apiKind): string
     {
         $apiAction = $Operation->operationId;
@@ -201,6 +219,13 @@ class API extends AbstractClassGenerator implements APIInterface
      *
      * @return array[]
      */
+    #[ArrayShape([
+        self::PARAMETER_IN_PATH => "array|\OpenAPI\Schema\V2\Parameter[]",
+        self::PARAMETER_IN_BODY => "array|mixed",
+        self::PARAMETER_IN_QUERY => "array",
+        self::PARAMETER_IN_HEADER => "array",
+        self::PARAMETER_IN_COOKIE => "array"
+    ])]
     protected function parseParameters(
         Operation $operation
     ): array {
@@ -302,23 +327,6 @@ class API extends AbstractClassGenerator implements APIInterface
         }
 
         return $sortedParameters;
-    }
-
-    public function prepare(): void
-    {
-        $config = Config::getInstance();
-        $this->setNamespace(rtrim($this->getRootNamespace() . '\\' .
-                                  $config->getOption(Config::OPTION_NAMESPACE_API)));
-
-        $this->ClassGenerator = new ClassGenerator();
-        $this->ClassGenerator
-            ->setNamespaceName($this->namespace)
-            ->setName(Utility::filterSpecialWord($this->classname))
-            ->setExtendedClass('AbstractAPI');
-
-        $this->setClass($this->ClassGenerator);
-
-        $this->initFilename();
     }
 
 }

@@ -12,9 +12,9 @@ interface CodeGeneratorInterface
     /**
      * CodeGeneratorInterface constructor.
      *
-     * @param  Swagger|OpenAPI  $spec
+     * @param  OpenAPI|Swagger  $spec
      */
-    public function __construct($spec);
+    public function __construct(OpenAPI|Swagger $spec);
 
     public function generateApis();
 

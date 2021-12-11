@@ -14,14 +14,14 @@ abstract class AbstractCodeGenerator implements CodeGeneratorInterface
     /**
      * @var Config
      */
-    protected $config;
+    protected Config $config;
 
     /**
      * CodeGeneratorInterface constructor.
      *
-     * @param  Swagger|OpenAPI  $spec
+     * @param  OpenAPI|Swagger  $spec
      */
-    public abstract function __construct($spec);
+    public abstract function __construct(OpenAPI|Swagger $spec);
 
     public abstract function generateApis();
 

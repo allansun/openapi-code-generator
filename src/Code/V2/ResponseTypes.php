@@ -15,12 +15,12 @@ use OpenAPI\Schema\V2\Response;
 
 class ResponseTypes extends AbstractClassGenerator
 {
-    private static $responseTypes = [];
+    private static array $responseTypes = [];
 
     /**
      * @var Paths
      */
-    private $spec;
+    private Paths $spec;
 
     public function __construct(Paths $spec)
     {

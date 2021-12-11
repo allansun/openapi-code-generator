@@ -34,12 +34,12 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
     /**
      * @var ClassGenerator
      */
-    protected $ClassGenerator;
+    protected ClassGenerator $ClassGenerator;
 
     /**
      * @var null|string
      */
-    protected $rootSourceFileDirectory = null;
+    protected ?string $rootSourceFileDirectory = null;
 
     abstract public function prepare(): void;
 
@@ -112,7 +112,7 @@ abstract class AbstractClassGenerator extends FileGenerator implements ClassGene
 
     protected function checkAndAddDeprecatedTag($description, DocBlockGenerator $DocBlockGenerator): void
     {
-        if (preg_match('/deprecated/', $description)) {
+        if (str_contains($description, 'deprecated')) {
             $DocBlockGenerator->setTag(new GenericTag('deprecated'));
         }
     }

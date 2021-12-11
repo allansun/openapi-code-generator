@@ -14,7 +14,7 @@ final class Utility
     /**
      * @var null|CaseTransformerInterface
      */
-    static private $caseTransformer = null;
+    static private ?CaseTransformerInterface $caseTransformer = null;
 
     public static function setCaseTransformer(CaseTransformerInterface $caseTransformer): void
     {
@@ -75,7 +75,7 @@ final class Utility
 
     static function getRelativeUrl(string $url): string
     {
-        if (substr($url, 0, 1) == '/') {
+        if (str_starts_with($url, '/')) {
             return substr($url, 1);
         } else {
             return $url;

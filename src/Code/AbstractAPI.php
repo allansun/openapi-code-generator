@@ -12,7 +12,6 @@ use OpenAPI\Runtime\AbstractAPI as BaseClass;
 
 class AbstractAPI extends AbstractClassGenerator
 {
-    private static $responseTypes = [];
 
     public function __construct()
     {
