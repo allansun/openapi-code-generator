@@ -5,10 +5,13 @@ namespace OpenAPI\CodeGenerator\Code;
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\ParameterGenerator;
+use Laminas\Code\Generator\PropertyGenerator;
 use Laminas\Code\Generator\PropertyValueGenerator;
+use Laminas\Code\Generator\TypeGenerator;
 use Laminas\Code\Generator\ValueGenerator;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\Runtime\AbstractAPI as BaseClass;
+use OpenAPI\Runtime\ResponseHandlerStack\ResponseHandlerStackInterface;
 
 class AbstractAPI extends AbstractClassGenerator
 {
@@ -31,14 +34,20 @@ class AbstractAPI extends AbstractClassGenerator
             ->addUse(BaseClass::class, 'BaseClass')
             ->setExtendedClass('BaseClass')
             ->setImplementedInterfaces(['APIInterface'])
-            ->addUse($this->getRootNamespace() . '\\JsonResponseHandlerStack', 'ResponseHandlerStack')
+            ->addUse($this->getRootNamespace() . '\\ResponseHandlerStack')
             ->addUse($this->namespace . '\\HttpClientInterface')
-            ->addProperty('responseHandlerStack',
+            ->addUse(ResponseHandlerStackInterface::class)
+            ->addPropertyFromGenerator(new PropertyGenerator('responseHandlerStack',
                 new PropertyValueGenerator(
                     'ResponseHandlerStack::class',
                     ValueGenerator::TYPE_CONSTANT
                 ),
-                [AbstractMemberGenerator::FLAG_PROTECTED, AbstractMemberGenerator::FLAG_STATIC]);
+                [
+                    AbstractMemberGenerator::FLAG_PROTECTED,
+                    AbstractMemberGenerator::FLAG_STATIC,
+                ],
+                TypeGenerator::fromTypeString('ResponseHandlerStackInterface|string')
+            ));
 
         $this->setClass($this->ClassGenerator);
 
