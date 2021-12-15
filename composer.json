@@ -21,7 +21,7 @@
         "ext-json": "*",
         "allansun/openapi-runtime": "3.*",
         "allansun/openapi-parser": "^2.1.2",
-        "laminas/laminas-code": "^4",
+        "birdsystem/laminas-code": "4.6.x-dev",
         "mattketmo/camel": "^v1.1.0",
         "symfony/console": "^5.3.11",
         "symfony/filesystem": "^v5.3.4",
@@ -49,5 +49,12 @@
         "bin/openapi-code-generator"
     ],
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": {
+        "packagist.org": false,
+        "private-packagist": {
+            "type": "composer",
+            "url": "https://repo.packagist.com/birdsystem/"
+        }
+    }
 }
