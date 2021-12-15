@@ -99,8 +99,8 @@ class Config
 
             self::OPTION_CODE_GENERATOR_CLASS => null,
 
-            self::OPTION_API_ALLOW_ERROR_RESPONSE => true,
-            self::OPTION_API_ALLOW_404_RESPONSE => true,
+            self::OPTION_API_ALLOW_ERROR_RESPONSE => false,
+            self::OPTION_API_ALLOW_404_RESPONSE => false,
 
             self::OPTION_FORMATTING_WORD_WRAP => true,
         ])->setAllowedValues(self::OPTION_CODE_GENERATOR_CLASS, function ($values) {
