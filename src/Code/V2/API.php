@@ -18,6 +18,7 @@ use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
+use OpenAPI\Runtime\UnexpectedResponse;
 use OpenAPI\Schema\V2\Header;
 use OpenAPI\Schema\V2\Operation;
 use OpenAPI\Schema\V2\Parameter;
@@ -58,7 +59,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         Logger::getInstance()->debug($this->classname . ' : ' . $apiAction . ' : ' . $Operation->operationId);
 
-
+        $config     = Config::getInstance();
         $parameters = $this->parseParameters($Operation);
 
         $MethodGenerator   = new MethodGenerator($apiAction);
@@ -168,6 +169,16 @@ class API extends AbstractClassGenerator implements APIInterface
             }
         }
 
+        if ('GET' == strtoupper($operation)) {
+            if ($config->getOption(Config::OPTION_API_ALLOW_404_RESPONSE)) {
+                $responseTypes['404'] = 'null';
+            }
+            if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
+                $responseTypes['api-response-error'] = '\\' . UnexpectedResponse::class;
+                $this->ClassGenerator->addUse(UnexpectedResponse::class);
+            }
+        }
+
         if (0 < count($responseTypes)) {
             $tags[] = new ReturnTag(implode('|', $responseTypes));
         } else {
@@ -267,7 +278,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         foreach ($parameters[self::PARAMETER_IN_PATH] as $Parameter) {
             /** @var Parameter $Parameter */
-            $path = str_replace('{' . $Parameter->name . '}', '{$' . $Parameter->name . '}', $path);
+            $path = str_replace('{' . $Parameter->name . '}', '$' . $Parameter->name, $path);
         }
 
         foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {

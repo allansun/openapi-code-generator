@@ -14,6 +14,8 @@ class Config
 {
     public const DEFAULT = 'DEFAULT';
 
+    public const OPTION_TARGET_PHP_VERION = 'OPTION_TARGET_PHP_VERION';
+
     public const OPTION_ROOT_SOURCE_DIR = 'ROOT_SOURCE_DIR';
 
     public const OPTION_NAMESPACE_ROOT = 'ROOT_NAMESPACE';
@@ -80,6 +82,8 @@ class Config
     {
         $resolver->setDefaults([
             self::OPTION_ROOT_SOURCE_DIR => __DIR__ . '/../generated/',
+
+            self::OPTION_TARGET_PHP_VERION => 7.4,
 
             self::OPTION_NAMESPACE_ROOT => 'App',
             self::OPTION_NAMESPACE_API => 'Api',

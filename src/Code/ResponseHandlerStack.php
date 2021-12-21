@@ -5,9 +5,10 @@ namespace OpenAPI\CodeGenerator\Code;
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use OpenAPI\CodeGenerator\Config;
-use OpenAPI\Runtime\ResponseHandler\AbnormalResponseStatusHandler;
 use OpenAPI\Runtime\ResponseHandler\Allow404ResponseStatusHandler;
+use OpenAPI\Runtime\ResponseHandler\GenericResponseHandler;
 use OpenAPI\Runtime\ResponseHandler\JsonResponseHandler;
+use OpenAPI\Runtime\ResponseHandler\UnexpectedResponseHandler;
 use OpenAPI\Runtime\ResponseHandlerStack\ResponseHandlerStack as BaseClass;
 
 class ResponseHandlerStack extends AbstractClassGenerator
@@ -31,18 +32,24 @@ class ResponseHandlerStack extends AbstractClassGenerator
     public function write(): ClassGeneratorInterface
     {
         $config = Config::getInstance();
+        $body   = '';
+
+        $this->ClassGenerator->addUse(GenericResponseHandler::class);
+        $body .= <<<EOF
+\$handlers[] = new GenericResponseHandler();
+EOF;
 
         $this->ClassGenerator->addUse(JsonResponseHandler::class);
-        $body = <<<EOF
+        $body .= <<<EOF
 \$jsonResponsHandler = new JsonResponseHandler();
 \$jsonResponsHandler->setResponseTypes(new ResponseTypes());
 \$handlers[] = \$jsonResponsHandler;
 EOF;
 
         if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
-            $this->ClassGenerator->addUse(AbnormalResponseStatusHandler::class);
+            $this->ClassGenerator->addUse(UnexpectedResponseHandler::class);
             $body .= <<<EOF
-\$handlers[] = new AbnormalResponseStatusHandler();
+\$handlers[] = new UnexpectedResponseHandler();
 EOF;
         }
 

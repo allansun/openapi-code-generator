@@ -46,7 +46,9 @@ class AbstractAPI extends AbstractClassGenerator
                     AbstractMemberGenerator::FLAG_PROTECTED,
                     AbstractMemberGenerator::FLAG_STATIC,
                 ],
-                TypeGenerator::fromTypeString('ResponseHandlerStackInterface|string')
+                $config->getOption(Config::OPTION_TARGET_PHP_VERION) >= 8.0 ?
+                    TypeGenerator::fromTypeString('ResponseHandlerStackInterface|string') :
+                    null
             ));
 
         $this->setClass($this->ClassGenerator);

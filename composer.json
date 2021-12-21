@@ -17,9 +17,9 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": "^8.0",
         "ext-json": "*",
-        "allansun/openapi-runtime": "3.*",
+        "allansun/openapi-runtime": "^3.1.2",
         "allansun/openapi-parser": "^2.1.2",
         "birdsystem/laminas-code": "4.6.x-dev",
         "mattketmo/camel": "^v1.1.0",

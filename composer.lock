@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e9fb199096eed4585408a7ebcbf83545",
+    "content-hash": "f2d5dd8dff93842bf201623ad7b853f1",
     "packages": [
         {
             "name": "allansun/openapi-parser",
@@ -61,16 +61,16 @@
         },
         {
             "name": "allansun/openapi-runtime",
-            "version": "3.1.1",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allansun/openapi-runtime.git",
-                "reference": "8bb3ea0314a98fb1e2e40720e299f0a9ee8d9d84"
+                "reference": "00dc98910bc1d7799572439e8120ff4c90f8830a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/8bb3ea0314a98fb1e2e40720e299f0a9ee8d9d84",
-                "reference": "8bb3ea0314a98fb1e2e40720e299f0a9ee8d9d84",
+                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/00dc98910bc1d7799572439e8120ff4c90f8830a",
+                "reference": "00dc98910bc1d7799572439e8120ff4c90f8830a",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -97,7 +97,9 @@
                 "phpspec/prophecy": "^1.12",
                 "phpspec/prophecy-phpunit": "^2.0",
                 "phpunit/phpunit": "~9",
-                "symfony/http-client": "^v5.2.6"
+                "squizlabs/php_codesniffer": "^3.6",
+                "symfony/http-client": "^v5.2.6",
+                "vimeo/psalm": "^4.15"
             },
             "suggest": {
                 "guzzlehttp/guzzle": "^7",
@@ -130,9 +132,9 @@
             ],
             "support": {
                 "issues": "https://github.com/allansun/openapi-runtime/issues",
-                "source": "https://github.com/allansun/openapi-runtime/tree/3.1.1"
+                "source": "https://github.com/allansun/openapi-runtime/tree/3.1.2"
             },
-            "time": "2021-12-11T23:27:35+00:00"
+            "time": "2021-12-20T23:45:11+00:00"
         },
         {
             "name": "birdsystem/laminas-code",
@@ -5786,7 +5788,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.4",
+        "php": "^8.0",
         "ext-json": "*"
     },
     "platform-dev": [],

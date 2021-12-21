@@ -6,10 +6,13 @@ namespace OpenAPI\CodeGenerator\Code\V3;
 
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\PropertyGenerator;
+use Laminas\Code\Generator\TypeGenerator;
 use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Code\APIOperations;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Utility;
+use OpenAPI\Runtime\GenericResponse;
 use OpenAPI\Runtime\ResponseTypes as RuntimeResponseTypes;
 use OpenAPI\Schema\V3\MediaType;
 use OpenAPI\Schema\V3\Operation;
@@ -58,9 +61,11 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
 
     public function write(): AbstractClassGenerator
     {
-        $this->ClassGenerator->addProperty('types',
+        $this->ClassGenerator->addPropertyFromGenerator(new PropertyGenerator('types',
             $this::$responseTypes,
-            [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC]);
+            [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC],
+            TypeGenerator::fromTypeString('array')
+        ));
 
         parent::write();
 
@@ -96,8 +101,10 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
                         . '[]';
 
                 }
-                self::$responseTypes[$Operation->operationId]["$statusCode."] = $responseType;
+            } else {
+                $responseType = GenericResponse::class;
             }
+            self::$responseTypes[$Operation->operationId]["$statusCode."] = $responseType;
         }
 
     }

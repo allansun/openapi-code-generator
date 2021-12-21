@@ -4,10 +4,13 @@ namespace OpenAPI\CodeGenerator\Code\V2;
 
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
+use Laminas\Code\Generator\PropertyGenerator;
+use Laminas\Code\Generator\TypeGenerator;
 use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Code\APIOperations;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Utility;
+use OpenAPI\Runtime\GenericResponse;
 use OpenAPI\Runtime\ResponseTypes as RuntimeResponseTypes;
 use OpenAPI\Schema\V2\Operation;
 use OpenAPI\Schema\V2\Paths;
@@ -43,10 +46,7 @@ class ResponseTypes extends AbstractClassGenerator
         $this->setClass($this->ClassGenerator);
 
         $this->initFilename();
-    }
 
-    public function write(): AbstractClassGenerator
-    {
         foreach ($this->spec->getPatternedFields() as $PathItemObject) {
             foreach (APIOperations::OPERATIONS as $operation) {
                 $OperationObject = $PathItemObject->$operation;
@@ -55,10 +55,15 @@ class ResponseTypes extends AbstractClassGenerator
                 }
             }
         }
+    }
 
-        $this->ClassGenerator->addProperty('types',
-            self::$responseTypes,
-            [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC]);
+    public function write(): AbstractClassGenerator
+    {
+        $this->ClassGenerator->addPropertyFromGenerator(new PropertyGenerator('types',
+            $this::$responseTypes,
+            [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC],
+            TypeGenerator::fromTypeString('array')
+        ));
 
         parent::write();
 
@@ -85,6 +90,8 @@ class ResponseTypes extends AbstractClassGenerator
                 } elseif ('array' == $Response->schema->type && !empty($Response->schema->items['$ref'])) {
                     $responseType =
                         $modelNamespace . Utility::convertV2RefToClass($Response->schema->items['$ref']) . '[]';
+                } else {
+                    $responseType = GenericResponse::class;
                 }
                 if (!empty($responseType)) {
                     self::$responseTypes[$Operation->operationId]["{$statusCode}."] = $responseType;

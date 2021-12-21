@@ -18,6 +18,7 @@ use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
+use OpenAPI\Runtime\UnexpectedResponse;
 use OpenAPI\Schema\V3\Header;
 use OpenAPI\Schema\V3\MediaType;
 use OpenAPI\Schema\V3\OpenAPI;
@@ -59,7 +60,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         Logger::getInstance()->debug($this->classname . ' : ' . $apiAction . ' : ' . $Operation->operationId);
 
-
+        $config     = Config::getInstance();
         $parameters = $this->parseParameters($Operation);
 
         $MethodGenerator   = new MethodGenerator($apiAction);
@@ -176,6 +177,16 @@ class API extends AbstractClassGenerator implements APIInterface
             }
         }
 
+        if ('GET' == strtoupper($operation)) {
+            if ($config->getOption(Config::OPTION_API_ALLOW_404_RESPONSE)) {
+                $responseTypes['404'] = 'null';
+            }
+            if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
+                $responseTypes['api-response-error'] = '\\' . UnexpectedResponse::class;
+                $this->ClassGenerator->addUse(UnexpectedResponse::class);
+            }
+        }
+
         if (0 < count($responseTypes)) {
             $tags[] = new ReturnTag(implode('|', $responseTypes));
         } else {
@@ -185,6 +196,23 @@ class API extends AbstractClassGenerator implements APIInterface
         $DocBlockGenerator->setTags($tags);
         $MethodGenerator->setDocBlock($DocBlockGenerator);
         $this->ClassGenerator->addMethodFromGenerator($MethodGenerator);
+    }
+
+    public function prepare(): void
+    {
+        $config = Config::getInstance();
+        $this->setNamespace(rtrim($this->getRootNamespace() . '\\' .
+                                  $config->getOption(Config::OPTION_NAMESPACE_API)));
+
+        $this->ClassGenerator = new ClassGenerator();
+        $this->ClassGenerator
+            ->setNamespaceName($this->namespace)
+            ->setName(Utility::filterSpecialWord($this->classname))
+            ->setExtendedClass('AbstractAPI');
+
+        $this->setClass($this->ClassGenerator);
+
+        $this->initFilename();
     }
 
     protected function parseApiAction(Operation $Operation, string $apiKind): string
@@ -216,7 +244,8 @@ class API extends AbstractClassGenerator implements APIInterface
         self::PARAMETER_IN_QUERY => "array",
         self::PARAMETER_IN_HEADER => "array",
         self::PARAMETER_IN_COOKIE => "array"
-    ])] protected function parseParameters(
+    ])]
+    protected function parseParameters(
         Operation $operation
     ): array {
         $parameters = [
@@ -261,7 +290,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         foreach ($parameters[self::PARAMETER_IN_PATH] as $Parameter) {
             /** @var Parameter $Parameter */
-            $path = str_replace('{' . $Parameter->name . '}', '{$' . $Parameter->name . '}', $path);
+            $path = str_replace('{' . $Parameter->name . '}', '$' . $Parameter->name , $path);
         }
 
         foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
@@ -321,23 +350,6 @@ class API extends AbstractClassGenerator implements APIInterface
         }
 
         return $sortedParameters;
-    }
-
-    public function prepare(): void
-    {
-        $config = Config::getInstance();
-        $this->setNamespace(rtrim($this->getRootNamespace() . '\\' .
-                                  $config->getOption(Config::OPTION_NAMESPACE_API)));
-
-        $this->ClassGenerator = new ClassGenerator();
-        $this->ClassGenerator
-            ->setNamespaceName($this->namespace)
-            ->setName(Utility::filterSpecialWord($this->classname))
-            ->setExtendedClass('AbstractAPI');
-
-        $this->setClass($this->ClassGenerator);
-
-        $this->initFilename();
     }
 
 }
