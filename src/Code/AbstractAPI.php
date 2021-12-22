@@ -44,7 +44,6 @@ class AbstractAPI extends AbstractClassGenerator
                 ),
                 [
                     AbstractMemberGenerator::FLAG_PROTECTED,
-                    AbstractMemberGenerator::FLAG_STATIC,
                 ],
                 $config->getOption(Config::OPTION_TARGET_PHP_VERION) >= 8.0 ?
                     TypeGenerator::fromTypeString('ResponseHandlerStackInterface|string') :
