@@ -7,6 +7,7 @@ use OpenAPI\CodeGenerator\Code\APIOperations;
 use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
+use OpenAPI\CodeGenerator\Utility;
 use OpenAPI\Schema\V2 as Schema;
 use OpenAPI\Schema\V2\Swagger;
 use OpenAPI\Schema\V3\OpenAPI;
@@ -38,7 +39,7 @@ class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterf
                 if ($operation instanceof Schema\Operation) {
                     // We assume first tag should be the Model this API operates on,this is mandatory.
                     // TODO: If this is not the case, a customized parsing method should be used.
-                    $classname = $operation->tags[0];
+                    $classname = Utility::convertDefinitionToClass($operation->tags[0]);
                     $classname = $classname ?? 'API';
                     if (array_key_exists($classname, $classGenerators)) {
                         $classGenerator = $classGenerators[$classname];
