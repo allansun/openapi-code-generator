@@ -37,7 +37,11 @@ class AbstractAPI extends AbstractClassGenerator
             ->addUse($this->getRootNamespace() . '\\ResponseHandlerStack')
             ->addUse($this->namespace . '\\HttpClientInterface')
             ->addUse(ResponseHandlerStackInterface::class)
-            ->addPropertyFromGenerator(new PropertyGenerator('responseHandlerStack', null,
+            ->addPropertyFromGenerator(new PropertyGenerator('responseHandlerStackClass',
+                new PropertyValueGenerator(
+                    'ResponseHandlerStack::class',
+                    ValueGenerator::TYPE_CONSTANT
+                ),
                 [
                     AbstractMemberGenerator::FLAG_PROTECTED,
                     AbstractMemberGenerator::FLAG_STATIC,
@@ -56,7 +60,6 @@ class AbstractAPI extends AbstractClassGenerator
                     new ValueGenerator('null', ValueGenerator::TYPE_CONSTANT))
             ],
             [AbstractMemberGenerator::FLAG_PUBLIC],
-            '$this->responseHandlerStack = ResponseHandlerStack::class;' .
             'parent::__construct($client);'
         );
 
