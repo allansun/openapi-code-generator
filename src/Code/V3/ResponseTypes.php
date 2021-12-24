@@ -63,7 +63,7 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
     {
         $this->ClassGenerator->addPropertyFromGenerator(new PropertyGenerator('types',
             $this::$responseTypes,
-            [AbstractMemberGenerator::FLAG_PUBLIC, AbstractMemberGenerator::FLAG_STATIC],
+            [AbstractMemberGenerator::FLAG_PUBLIC],
             TypeGenerator::fromTypeString('array')
         ));
 

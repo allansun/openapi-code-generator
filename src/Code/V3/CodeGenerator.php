@@ -8,7 +8,6 @@ use OpenAPI\CodeGenerator\Code\CodeGeneratorInterface;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
-use OpenAPI\Schema\V2\Swagger;
 use OpenAPI\Schema\V3 as Schema;
 use OpenAPI\Schema\V3\OpenAPI;
 
@@ -19,7 +18,10 @@ class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterf
      */
     private OpenAPI $spec;
 
-    public function __construct(OpenAPI|Swagger $spec)
+    /**
+     * @param  OpenAPI  $spec
+     */
+    public function __construct($spec)
     {
         $this->spec   = $spec;
         $this->config = Config::getInstance();
@@ -31,8 +33,8 @@ class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterf
         /** @var Api[] $classGenerators */
         $classGenerators = [];
 
-        $class           = $this->config->getOption(Config::OPTION_API_GENERATOR_CLASS);
-        $class           = Config::DEFAULT == $class ? API::class : $class;
+        $class = $this->config->getOption(Config::OPTION_API_GENERATOR_CLASS);
+        $class = Config::DEFAULT == $class ? API::class : $class;
 
         foreach ($this->spec->paths->getPatternedFields() as $path => $pathItem) {
             foreach (APIOperations::OPERATIONS as $operationMethod) {

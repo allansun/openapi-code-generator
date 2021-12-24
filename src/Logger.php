@@ -2,7 +2,6 @@
 
 namespace OpenAPI\CodeGenerator;
 
-use JetBrains\PhpStorm\Pure;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -14,14 +13,14 @@ class Logger
     static private ?Logger $instance = null;
 
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface|NullLogger
      */
-    private LoggerInterface|NullLogger $logger;
+    private $logger;
 
     /**
      * Logger constructor.
      */
-    #[Pure] private function __construct()
+    private function __construct()
     {
         $this->logger = new NullLogger();
     }

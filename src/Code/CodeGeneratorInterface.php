@@ -14,7 +14,7 @@ interface CodeGeneratorInterface
      *
      * @param  OpenAPI|Swagger  $spec
      */
-    public function __construct(OpenAPI|Swagger $spec);
+    public function __construct($spec);
 
     public function generateApis();
 

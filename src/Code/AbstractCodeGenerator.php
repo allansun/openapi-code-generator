@@ -21,7 +21,7 @@ abstract class AbstractCodeGenerator implements CodeGeneratorInterface
      *
      * @param  OpenAPI|Swagger  $spec
      */
-    public abstract function __construct(OpenAPI|Swagger $spec);
+    public abstract function __construct($spec);
 
     public abstract function generateApis();
 

@@ -10,7 +10,6 @@ use OpenAPI\CodeGenerator\Logger;
 use OpenAPI\CodeGenerator\Utility;
 use OpenAPI\Schema\V2 as Schema;
 use OpenAPI\Schema\V2\Swagger;
-use OpenAPI\Schema\V3\OpenAPI;
 
 class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterface
 {
@@ -19,7 +18,10 @@ class CodeGenerator extends AbstractCodeGenerator implements CodeGeneratorInterf
      */
     private Swagger $spec;
 
-    public function __construct(OpenAPI|Swagger $spec)
+    /**
+     * @param  Swagger  $spec
+     */
+    public function __construct($spec)
     {
         $this->spec   = $spec;
         $this->config = Config::getInstance();

@@ -238,13 +238,6 @@ class API extends AbstractClassGenerator implements APIInterface
      *
      * @return array[]
      */
-    #[ArrayShape([
-        self::PARAMETER_IN_PATH => "array|\OpenAPI\Schema\V3\Parameter[]",
-        self::PARAMETER_IN_BODY => "array|mixed",
-        self::PARAMETER_IN_QUERY => "array",
-        self::PARAMETER_IN_HEADER => "array",
-        self::PARAMETER_IN_COOKIE => "array"
-    ])]
     protected function parseParameters(
         Operation $operation
     ): array {
