@@ -61,16 +61,16 @@
         },
         {
             "name": "allansun/openapi-runtime",
-            "version": "3.2.0",
+            "version": "3.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allansun/openapi-runtime.git",
-                "reference": "5c94c003382d5e3dbf84a0df0781003ab40daf6a"
+                "reference": "a0ff2e127c77a14f0b114a3599b82ffe7f0920c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/5c94c003382d5e3dbf84a0df0781003ab40daf6a",
-                "reference": "5c94c003382d5e3dbf84a0df0781003ab40daf6a",
+                "url": "https://api.github.com/repos/allansun/openapi-runtime/zipball/a0ff2e127c77a14f0b114a3599b82ffe7f0920c8",
+                "reference": "a0ff2e127c77a14f0b114a3599b82ffe7f0920c8",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -132,9 +132,9 @@
             ],
             "support": {
                 "issues": "https://github.com/allansun/openapi-runtime/issues",
-                "source": "https://github.com/allansun/openapi-runtime/tree/3.2.0"
+                "source": "https://github.com/allansun/openapi-runtime/tree/3.2.1"
             },
-            "time": "2021-12-24T12:17:11+00:00"
+            "time": "2021-12-28T07:41:54+00:00"
         },
         {
             "name": "birdsystem/laminas-code",
