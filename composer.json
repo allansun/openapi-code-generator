@@ -19,6 +19,7 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
+        "allansun/openapi-runtime": "^3",
         "allansun/openapi-parser": "^2.1.2",
         "birdsystem/laminas-code": "4.6.x-dev",
         "friendsofphp/php-cs-fixer": "^2|^3",
@@ -32,7 +33,6 @@
         "psr/cache": "1.*|2.*|3.*"
     },
     "require-dev": {
-        "allansun/openapi-runtime": "^3",
         "phpunit/phpunit": "^9.5.10"
 
     },
