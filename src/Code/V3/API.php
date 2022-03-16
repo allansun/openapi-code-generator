@@ -113,6 +113,9 @@ class API extends AbstractClassGenerator implements APIInterface
                                          Utility::convertV3RefToClass($bodyParameters->schema->getPatternedField('_ref'))),
                 $Operation->requestBody->description
             );
+        } elseif ($bodyParameters && property_exists($bodyParameters, 'schema')) {
+            $MethodGenerator->setParameter(new ParameterGenerator('data', 'array', []));
+            $tags[] = new ParamTag('data', ['array'], $Operation->requestBody->description);
         }
 
         // Set query parameters
@@ -138,20 +141,22 @@ class API extends AbstractClassGenerator implements APIInterface
                     if ('application/json' != $contentType) {
                         continue;
                     }
+                    if (!is_object($content) || !property_exists($content, 'schema')) {
+                        continue;
+                    }
                     /** @var MediaType $content */
-                    if ($content->schema && $content->schema->getPatternedField('_ref')) {
+                    if ($content->schema->getPatternedField('_ref')) {
                         $responseTypes[$content->schema->getPatternedField('_ref')] =
                             $this->getUseAlias(Config::getInstance()->getModelNamespace() .
                                                Utility::convertV3RefToClass($content->schema->getPatternedField('_ref')));
-                    } elseif ($content->schema &&
-                              'array' == $content->schema->type &&
+                    } elseif ('array' == $content->schema->type &&
                               $content->schema->items->getPatternedField('_ref')
                     ) {
                         $responseTypes[$content->schema->items->getPatternedField('_ref')] =
                             $this->getUseAlias(Config::getInstance()->getModelNamespace() .
                                                Utility::convertV3RefToClass($content->schema->items->getPatternedField('_ref'))
                             ) . '[]';
-                    } elseif ($content->schema && $content->schema->type) {
+                    } elseif ($content->schema->type) {
                         $responseTypes[$content->schema->type] = $content->schema->type;
                     }
                 }
@@ -196,9 +201,9 @@ class API extends AbstractClassGenerator implements APIInterface
         Operation $operation
     ): array {
         $parameters = [
-            self::PARAMETER_IN_PATH => [],
-            self::PARAMETER_IN_BODY => [],
-            self::PARAMETER_IN_QUERY => [],
+            self::PARAMETER_IN_PATH   => [],
+            self::PARAMETER_IN_BODY   => [],
+            self::PARAMETER_IN_QUERY  => [],
             self::PARAMETER_IN_HEADER => [],
             self::PARAMETER_IN_COOKIE => [],
         ];
@@ -233,12 +238,13 @@ class API extends AbstractClassGenerator implements APIInterface
         $body               = '';
         $queryParameterBody = "\t[" . PHP_EOL;
 
-
-        foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
-            /** @var Schema $Parameter */
-            if ($Parameter && $Parameter->getPatternedField('_ref')) {
-                $queryParameterBody .= "\t\t'json' => \$Model->getArrayCopy()," . PHP_EOL;
-            }
+        $bodyParameters = $parameters[self::PARAMETER_IN_BODY];
+        if ($bodyParameters
+            && property_exists($bodyParameters, 'schema')
+            && $bodyParameters->schema->getPatternedField('_ref')) {
+            $queryParameterBody .= "\t\t'json' => \$Model->getArrayCopy()," . PHP_EOL;
+        } elseif ($bodyParameters && property_exists($bodyParameters, 'schema')) {
+            $queryParameterBody .= "\t\t'json' => \$data," . PHP_EOL;
         }
 
         foreach ($parameters[self::PARAMETER_IN_PATH] as $Parameter) {

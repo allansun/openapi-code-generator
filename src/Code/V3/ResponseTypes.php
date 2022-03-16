@@ -86,7 +86,9 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
                 /** @var MediaType $jsonResponse */
                 $jsonResponse = $Response->content['application/json'];
                 $responseType = null;
-                if ($jsonResponse->schema->getPatternedField('_ref')) {
+                if (!is_object($jsonResponse) || !property_exists($jsonResponse, 'schema')) {
+                    //do nothing
+                } elseif ($jsonResponse->schema->getPatternedField('_ref')) {
                     $responseType =
                         $modelNamespace .
                         Utility::convertV3RefToClass($jsonResponse->schema->getPatternedField('_ref'));
