@@ -102,6 +102,8 @@ class ResponseTypes extends AbstractClassGenerator implements ResponseTypesInter
                         Utility::convertV3RefToClass($jsonResponse->schema->items->getPatternedField('_ref'))
                         . '[]';
 
+                } elseif('object' == $jsonResponse->schema->type) {
+                    $responseType = GenericResponse::class;
                 }
             } else {
                 $responseType = GenericResponse::class;
