@@ -36,14 +36,16 @@ class ResponseHandlerStack extends AbstractClassGenerator
 
         $this->ClassGenerator->addUse(GenericResponseHandler::class);
         $body .= <<<EOF
-\$handlers[] = new GenericResponseHandler();
+\$genericResponseHandler = new GenericResponseHandler();
+\$genericResponseHandler->setResponseTypes(new ResponseTypes());
+\$handlers[] = \$genericResponseHandler;
 EOF;
 
         $this->ClassGenerator->addUse(JsonResponseHandler::class);
         $body .= <<<EOF
-\$jsonResponsHandler = new JsonResponseHandler();
-\$jsonResponsHandler->setResponseTypes(new ResponseTypes());
-\$handlers[] = \$jsonResponsHandler;
+\$jsonResponseHandler = new JsonResponseHandler();
+\$jsonResponseHandler->setResponseTypes(new ResponseTypes());
+\$handlers[] = \$jsonResponseHandler;
 EOF;
 
         if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
