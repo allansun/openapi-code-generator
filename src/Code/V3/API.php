@@ -100,6 +100,7 @@ class API extends AbstractClassGenerator implements APIInterface
         // Set request body parameter
         if ($bodyParameters
             && property_exists($bodyParameters, 'schema')
+            && is_object($bodyParameters->schema)
             && $bodyParameters->schema->getPatternedField('_ref')) {
             $ParameterGenerator =
                 new ParameterGenerator('Model',
@@ -294,7 +295,7 @@ class API extends AbstractClassGenerator implements APIInterface
 
         foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
             /** @var Schema $Parameter */
-            if ($Parameter && $Parameter->getPatternedField('_ref')) {
+            if ($Parameter && is_object($Parameter) && $Parameter->getPatternedField('_ref')) {
                 $requestHasBody = true;
             }
         }
