@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "allansun/openapi-parser",
-            "version": "2.1.5",
+            "version": "2.1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/allansun/openapi-parser.git",
-                "reference": "d74ae7a68e17a1c6500e6f7b1f3670d418fb5aa7"
+                "reference": "f03c235e3c7887694e0cad6dbea0546c86e9a823"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/allansun/openapi-parser/zipball/d74ae7a68e17a1c6500e6f7b1f3670d418fb5aa7",
-                "reference": "d74ae7a68e17a1c6500e6f7b1f3670d418fb5aa7",
+                "url": "https://api.github.com/repos/allansun/openapi-parser/zipball/f03c235e3c7887694e0cad6dbea0546c86e9a823",
+                "reference": "f03c235e3c7887694e0cad6dbea0546c86e9a823",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -55,9 +55,9 @@
             "description": "A universal OpenAPI (Swagger) schema parser",
             "support": {
                 "issues": "https://github.com/allansun/openapi-parser/issues",
-                "source": "https://github.com/allansun/openapi-parser/tree/2.1.5"
+                "source": "https://github.com/allansun/openapi-parser/tree/2.1.5.1"
             },
-            "time": "2021-12-23T13:52:28+00:00"
+            "time": "2022-03-30T16:48:31+00:00"
         },
         {
             "name": "allansun/openapi-runtime",
@@ -5705,5 +5705,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }
