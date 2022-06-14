@@ -100,6 +100,7 @@ class API extends AbstractClassGenerator implements APIInterface
         // Set request body parameter
         if ($bodyParameters
             && property_exists($bodyParameters, 'schema')
+            && is_object($bodyParameters->schema)
             && $bodyParameters->schema->getPatternedField('_ref')) {
             $ParameterGenerator =
                 new ParameterGenerator('Model',
@@ -118,6 +119,9 @@ class API extends AbstractClassGenerator implements APIInterface
                                          Utility::convertV3RefToClass($bodyParameters->schema->getPatternedField('_ref'))),
                 $Operation->requestBody->description
             );
+        } elseif ($bodyParameters && property_exists($bodyParameters, 'schema')) {
+            $MethodGenerator->setParameter(new ParameterGenerator('data', 'array', []));
+            $tags[] = new ParamTag('data', ['array'], $Operation->requestBody->description);
         }
 
         // Set query parameters
@@ -157,20 +161,22 @@ class API extends AbstractClassGenerator implements APIInterface
                     if ('application/json' != $contentType) {
                         continue;
                     }
+                    if (!is_object($content) || !property_exists($content, 'schema')) {
+                        continue;
+                    }
                     /** @var MediaType $content */
-                    if ($content->schema && $content->schema->getPatternedField('_ref')) {
+                    if ($content->schema->getPatternedField('_ref')) {
                         $responseTypes[$content->schema->getPatternedField('_ref')] =
                             $this->getUseAlias(Config::getInstance()->getModelNamespace() .
                                                Utility::convertV3RefToClass($content->schema->getPatternedField('_ref')));
-                    } elseif ($content->schema &&
-                              'array' == $content->schema->type &&
+                    } elseif ('array' == $content->schema->type &&
                               $content->schema->items->getPatternedField('_ref')
                     ) {
                         $responseTypes[$content->schema->items->getPatternedField('_ref')] =
                             $this->getUseAlias(Config::getInstance()->getModelNamespace() .
                                                Utility::convertV3RefToClass($content->schema->items->getPatternedField('_ref'))
                             ) . '[]';
-                    } elseif ($content->schema && $content->schema->type) {
+                    } elseif ($content->schema->type) {
                         $responseTypes[$content->schema->type] = $content->schema->type;
                     }
                 }
@@ -242,9 +248,9 @@ class API extends AbstractClassGenerator implements APIInterface
         Operation $operation
     ): array {
         $parameters = [
-            self::PARAMETER_IN_PATH => [],
-            self::PARAMETER_IN_BODY => [],
-            self::PARAMETER_IN_QUERY => [],
+            self::PARAMETER_IN_PATH   => [],
+            self::PARAMETER_IN_BODY   => [],
+            self::PARAMETER_IN_QUERY  => [],
             self::PARAMETER_IN_HEADER => [],
             self::PARAMETER_IN_COOKIE => [],
         ];
@@ -278,6 +284,7 @@ class API extends AbstractClassGenerator implements APIInterface
     string {
         $body             = '';
         $requestHasBody   = false;
+        $requestHasBodyWithoutModel = false;
         $requestHasQuery  = false;
         $requestHasHeader = false;
 
@@ -288,9 +295,12 @@ class API extends AbstractClassGenerator implements APIInterface
 
         foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
             /** @var Schema $Parameter */
-            if ($Parameter && $Parameter->getPatternedField('_ref')) {
+            if ($Parameter && is_object($Parameter) && $Parameter->getPatternedField('_ref')) {
                 $requestHasBody = true;
             }
+        }
+        if(!$requestHasBody && $parameters[self::PARAMETER_IN_BODY]){
+            $requestHasBodyWithoutModel = true;
         }
 
         if (0 < count($parameters[self::PARAMETER_IN_QUERY])) {
@@ -308,7 +318,7 @@ class API extends AbstractClassGenerator implements APIInterface
                  "'$Operation->operationId'," . PHP_EOL .
                  "'" . strtoupper($operation) . "'," . PHP_EOL .
                  "\"$path\"," . PHP_EOL .
-                 ($requestHasBody ? "\$Model->getArrayCopy()" : 'null') . ',' . PHP_EOL .
+                 ($requestHasBodyWithoutModel?"\$data":($requestHasBody ? "\$Model->getArrayCopy()" : 'null')) . ',' . PHP_EOL .
                  ($requestHasQuery ? "\$queries" : '[]') . ',' . PHP_EOL .
                  ($requestHasHeader ? "\$headers" : '[]') . PHP_EOL .
                  ');' . PHP_EOL;
