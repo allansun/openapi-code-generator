@@ -82,8 +82,8 @@ class API extends AbstractClassGenerator implements APIInterface
         // Set method parameters
         if (0 < count($methodParameters)) {
             foreach ($methodParameters as $Parameter) {
-                $ParameterGenerator = new ParameterGenerator($Parameter->name, $Parameter->schema->type,
-                    $Parameter->schema->default);
+                $ParameterGenerator = new ParameterGenerator($Parameter->name, $Parameter?->schema?->type,
+                    $Parameter?->schema?->default);
                 $MethodGenerator->setParameter($ParameterGenerator);
 
                 $tags[] = new ParamTag($ParameterGenerator->getName(),
@@ -274,9 +274,7 @@ class API extends AbstractClassGenerator implements APIInterface
             $path = str_replace('{' . $Parameter->name . '}', '$' . $Parameter->name, $path);
         }
 
-        $Parameter = $parameters[self::PARAMETER_IN_BODY];
-        /** @var Parameter $Parameter */
-        if ($Parameter?->schema?->getPatternedField('_ref')) {
+        if ($parameters[self::PARAMETER_IN_BODY] && $parameters[self::PARAMETER_IN_BODY]?->schema?->getPatternedField('_ref')) {
             $requestHasBody = true;
         }
 
