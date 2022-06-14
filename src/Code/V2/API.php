@@ -6,7 +6,6 @@ namespace OpenAPI\CodeGenerator\Code\V2;
 use Camel\CaseTransformer;
 use Camel\Format\CamelCase;
 use Camel\Format\SnakeCase;
-use JetBrains\PhpStorm\ArrayShape;
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\ParamTag;
@@ -32,6 +31,7 @@ class API extends AbstractClassGenerator implements APIInterface
      * @var Swagger
      */
     private Swagger $swagger;
+
     /**
      * @var string
      */
@@ -123,7 +123,7 @@ class API extends AbstractClassGenerator implements APIInterface
             foreach ($queryParameters as $ParameterGenerator) {
                 /** @var Parameter $ParameterGenerator */
                 $queryOptionsDescription .= "'" . $ParameterGenerator->name . "'" . "\t" .
-                                            $ParameterGenerator->schema->type .
+                                            $ParameterGenerator?->schema?->type .
                                             "\t" . $ParameterGenerator->description .
                                             PHP_EOL;
             }
@@ -137,7 +137,7 @@ class API extends AbstractClassGenerator implements APIInterface
             foreach ($headerParameters as $headerParameter) {
                 /** @var Parameter $headerParameter */
                 $headerOptionsDescription .= "'" . $headerParameter->name . "'" . "\t" .
-                                             $headerParameter->schema->type .
+                                             $headerParameter?->schema?->type .
                                              "\t" . $headerParameter->description .
                                              PHP_EOL;
             }
@@ -234,9 +234,9 @@ class API extends AbstractClassGenerator implements APIInterface
         Operation $operation
     ): array {
         $parameters = [
-            self::PARAMETER_IN_PATH => [],
-            self::PARAMETER_IN_BODY => [],
-            self::PARAMETER_IN_QUERY => [],
+            self::PARAMETER_IN_PATH   => [],
+            self::PARAMETER_IN_BODY   => [],
+            self::PARAMETER_IN_QUERY  => [],
             self::PARAMETER_IN_HEADER => [],
             self::PARAMETER_IN_COOKIE => [],
         ];
@@ -274,11 +274,10 @@ class API extends AbstractClassGenerator implements APIInterface
             $path = str_replace('{' . $Parameter->name . '}', '$' . $Parameter->name, $path);
         }
 
-        foreach ($parameters[self::PARAMETER_IN_BODY] as $Parameter) {
-            /** @var Schema $Parameter */
-            if ($Parameter && $Parameter->getPatternedField('_ref')) {
-                $requestHasBody = true;
-            }
+        $Parameter = $parameters[self::PARAMETER_IN_BODY];
+        /** @var Parameter $Parameter */
+        if ($Parameter?->schema?->getPatternedField('_ref')) {
+            $requestHasBody = true;
         }
 
         if (0 < count($parameters[self::PARAMETER_IN_QUERY])) {

@@ -17,10 +17,10 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
+        "php": "^8.0",
         "ext-json": "*",
         "allansun/openapi-runtime": "^3",
-        "allansun/openapi-parser": "^2.1.2",
+        "allansun/openapi-parser": "^2",
         "birdsystem/laminas-code": "4.6.x-dev",
         "friendsofphp/php-cs-fixer": "^2|^3",
         "mattketmo/camel": "^v1.1.0",
@@ -35,6 +35,20 @@
     "require-dev": {
         "phpunit/phpunit": "^9.5.10"
 
+    },
+    "config": {
+        "platform": {
+            "php": "8.0.15"
+        },
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true,
+            "symfony/runtime": true
+        }
     },
     "replace": {
         "laminas/laminas-code": "4.*"
@@ -52,9 +66,6 @@
     "bin": [
         "bin/openapi-code-generator"
     ],
-    "config": {
-        "sort-packages": true
-    },
     "minimum-stability": "stable",
     "prefer-stable": true,
     "repositories": {
