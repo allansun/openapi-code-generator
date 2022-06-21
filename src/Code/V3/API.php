@@ -6,7 +6,6 @@ namespace OpenAPI\CodeGenerator\Code\V3;
 use Camel\CaseTransformer;
 use Camel\Format\CamelCase;
 use Camel\Format\SnakeCase;
-use JetBrains\PhpStorm\ArrayShape;
 use Laminas\Code\Generator\AbstractMemberGenerator;
 use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\ParamTag;
@@ -187,10 +186,9 @@ class API extends AbstractClassGenerator implements APIInterface
             if ($config->getOption(Config::OPTION_API_ALLOW_404_RESPONSE)) {
                 $responseTypes['404'] = 'null';
             }
-            if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
-                $responseTypes['api-response-error'] = '\\' . UnexpectedResponse::class;
-                $this->ClassGenerator->addUse(UnexpectedResponse::class);
-            }
+        }
+        if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
+            $responseTypes['api-response-error'] = $this->getUseAlias(UnexpectedResponse::class);
         }
 
         if (0 < count($responseTypes)) {

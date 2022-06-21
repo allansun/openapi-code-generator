@@ -173,10 +173,9 @@ class API extends AbstractClassGenerator implements APIInterface
             if ($config->getOption(Config::OPTION_API_ALLOW_404_RESPONSE)) {
                 $responseTypes['404'] = 'null';
             }
-            if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
-                $responseTypes['api-response-error'] = '\\' . UnexpectedResponse::class;
-                $this->ClassGenerator->addUse(UnexpectedResponse::class);
-            }
+        }
+        if ($config->getOption(Config::OPTION_API_ALLOW_ERROR_RESPONSE)) {
+            $responseTypes['api-response-error'] = $this->getUseAlias(UnexpectedResponse::class);
         }
 
         if (0 < count($responseTypes)) {
@@ -274,7 +273,8 @@ class API extends AbstractClassGenerator implements APIInterface
             $path = str_replace('{' . $Parameter->name . '}', '$' . $Parameter->name, $path);
         }
 
-        if ($parameters[self::PARAMETER_IN_BODY] && $parameters[self::PARAMETER_IN_BODY]?->schema?->getPatternedField('_ref')) {
+        if ($parameters[self::PARAMETER_IN_BODY] &&
+            $parameters[self::PARAMETER_IN_BODY]?->schema?->getPatternedField('_ref')) {
             $requestHasBody = true;
         }
 
