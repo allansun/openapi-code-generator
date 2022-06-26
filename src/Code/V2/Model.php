@@ -8,6 +8,7 @@ use Laminas\Code\Generator\ClassGenerator;
 use Laminas\Code\Generator\DocBlock\Tag\VarTag;
 use Laminas\Code\Generator\DocBlockGenerator;
 use Laminas\Code\Generator\PropertyGenerator;
+use Laminas\Code\Generator\TypeGenerator;
 use OpenAPI\CodeGenerator\Code\AbstractClassGenerator;
 use OpenAPI\CodeGenerator\Config;
 use OpenAPI\CodeGenerator\Utility;
@@ -70,7 +71,8 @@ class Model extends AbstractClassGenerator implements ModelInterface
         }
 
         if ($this->Schema->type && 'object' != $this->Schema->type) {
-            $this->ClassGenerator->addProperty('isRawObject', true, AbstractMemberGenerator::FLAG_PROTECTED);
+            $this->ClassGenerator->addPropertyFromGenerator(new PropertyGenerator('isRawObject', true,
+                AbstractMemberGenerator::FLAG_PROTECTED, TypeGenerator::fromTypeString('bool')));
         }
 
         $this->initFilename();
@@ -122,7 +124,8 @@ class Model extends AbstractClassGenerator implements ModelInterface
                 if (array_key_exists('nullable', $property) && true == $property['nullable']) {
                     $types[] = 'null';
                 }
-                $DocBlockGenerator->setTag(new VarTag(null, $types));
+                $varTag = new VarTag(null, $types);
+                $DocBlockGenerator->setTag($varTag);
             }
 
             if (array_key_exists('default', $property)) {
